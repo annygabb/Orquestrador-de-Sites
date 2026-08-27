@@ -1,0 +1,37 @@
+name: Validar propostas de skills
+
+on:
+  pull_request:
+    paths:
+      - "data/skills.json"
+      - "skills/**"
+      - "lib/catalog.ts"
+      - "app/**"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Validar catálogo e SKILL.md
+        run: npm run validate:skills
+
+      - name: Verificar TypeScript
+        run: npm run typecheck
+
+      - name: Gerar build de produção
+        run: npm run build
