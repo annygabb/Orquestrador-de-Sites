@@ -1,5 +1,6 @@
 import { baseURL } from "@/baseUrl";
 import { catalog, itemById } from "@/lib/catalog";
+import { ProposalError, skillProposalSchema, submitSkillProposal, validateTurnstile } from "@/lib/skill-proposals";
 import {
   registerAppResource,
   registerAppTool,
@@ -8,7 +9,7 @@ import {
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
-const RESOURCE_URI = "ui://orquestrador-de-sites/seletor.html?v=1";
+const RESOURCE_URI = "ui://orquestrador-de-sites/seletor.html?v=2";
 
 async function fetchPageHtml() {
   const response = await fetch(baseURL);
@@ -31,8 +32,9 @@ const handler = createMcpHandler(async (server) => {
           _meta: {
             ui: {
               csp: {
-                connectDomains: [baseURL],
-                resourceDomains: [baseURL],
+                connectDomains: [baseURL, "https://challenges.cloudflare.com"],
+                resourceDomains: [baseURL, "https://challenges.cloudflare.com"],
+                frameDomains: ["https://challenges.cloudflare.com"],
               },
             },
           },
@@ -59,6 +61,37 @@ const handler = createMcpHandler(async (server) => {
         instructions: "A seleção ainda não foi confirmada.",
       },
     }),
+  );
+
+  registerAppTool(
+    server,
+    "submit_skill_proposal",
+    {
+      title: "Enviar skill para aprovação",
+      description: "Valida uma nova skill, cria sua pasta e SKILL.md em uma branch separada e abre um Pull Request para revisão de Anny.",
+      inputSchema: skillProposalSchema.shape,
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+      _meta: { ui: { visibility: ["app"] } },
+    },
+    async (proposal) => {
+      try {
+        const parsed = skillProposalSchema.parse(proposal);
+        await validateTurnstile(parsed.turnstileToken);
+        const result = await submitSkillProposal(parsed);
+        return {
+          content: [{ type: "text" as const, text: `Skill enviada para aprovação no Pull Request #${result.pullRequestNumber}.` }],
+          structuredContent: {
+            success: true,
+            message: "Skill enviada para aprovação",
+            pullRequestNumber: result.pullRequestNumber,
+            pullRequestUrl: result.pullRequestUrl,
+          },
+        };
+      } catch (error) {
+        const message = error instanceof ProposalError ? error.message : "Não foi possível enviar a skill para aprovação.";
+        return { isError: true, content: [{ type: "text" as const, text: message }], structuredContent: { success: false, message } };
+      }
+    },
   );
 
   registerAppTool(
