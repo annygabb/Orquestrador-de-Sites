@@ -106,6 +106,11 @@ export default function Home() {
       setStatus("idle");
       setStage("done");
       window.scrollTo({ top: 0, behavior: "smooth" });
+      if (!app) {
+        window.setTimeout(() => {
+          window.location.assign("https://chatgpt.com/");
+        }, 900);
+      }
     } catch (error) {
       console.error(error);
       setPreparedPrompt(prompt);
@@ -204,9 +209,9 @@ export default function Home() {
             <p>Informe o link do chat em que o projeto foi criado ou o endereço público do site que será revisado.</p>
             <form className="destination-form" onSubmit={deliver}>
               <label><span>Link do chat ou projeto</span><input type="url" required autoFocus value={destinationLink} onChange={(event) => setDestinationLink(event.target.value)} placeholder="https://chatgpt.com/c/... ou https://seusite.com" /></label>
-              <div className="destination-note"><strong>{connected ? "O painel está no ChatGPT." : "O painel está no navegador."}</strong><span>{connected ? "As instruções serão enviadas à conversa em que este painel foi aberto. O link informado entra como referência do projeto." : "O navegador não pode escrever em uma conversa do ChatGPT. O painel vai copiar um prompt pronto para você colar no chat desejado."}</span></div>
+              <div className="destination-note"><strong>{connected ? "O painel está no ChatGPT." : "O painel está no navegador."}</strong><span>{connected ? "As instruções serão enviadas à conversa em que este painel foi aberto. O link informado entra como referência do projeto." : "O painel vai copiar um prompt pronto e redirecionar você ao ChatGPT. Lá, basta colar no chat desejado."}</span></div>
               {status === "error" && <div className="error-message" role="alert">O envio automático não foi concluído. O texto ficou preparado para você copiar.<button type="button" onClick={copyPreparedPrompt}>Copiar instruções</button></div>}
-              <button className="button-primary destination-submit" disabled={!destinationLink.trim() || status === "saving"}>{status === "saving" ? "Preparando envio…" : connected ? "Enviar para este chat" : "Copiar para usar no ChatGPT"}</button>
+              <button className="button-primary destination-submit" disabled={!destinationLink.trim() || status === "saving"}>{status === "saving" ? "Preparando envio…" : connected ? "Enviar para este chat" : "Copiar e abrir o ChatGPT"}</button>
             </form>
           </div>
           <aside className="selection-review" aria-label="Resumo da seleção"><span>Seleção confirmada</span><strong>{selectedItems.length} {selectedItems.length === 1 ? "opção" : "opções"}</strong><ul>{selectedItems.map((item) => <li key={item.id}>{item.name}</li>)}</ul></aside>
@@ -216,9 +221,9 @@ export default function Home() {
       {stage === "done" && (
         <section className="done-screen">
           <span className="done-mark" aria-hidden="true">✓</span><p className="stage-label">Etapa 3 de 3</p>
-          <h1>{deliveryMode === "chat" ? "Skills enviadas ao chat atual." : "Instruções copiadas."}</h1>
-          <p>{deliveryMode === "chat" ? "O ChatGPT recebeu a seleção, o link de referência e as instruções completas para trabalhar no projeto." : "Abra o chat do projeto e cole o texto que já está na sua área de transferência."}</p>
-          <div className="done-actions">{deliveryMode === "clipboard" && <a className="button-primary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Abrir ChatGPT</a>}<button className="button-secondary" onClick={resetFlow}>Voltar ao painel</button></div>
+          <h1>{deliveryMode === "chat" ? "Skills enviadas ao chat atual." : "Abrindo o ChatGPT."}</h1>
+          <p>{deliveryMode === "chat" ? "O ChatGPT recebeu a seleção, o link de referência e as instruções completas para trabalhar no projeto." : "As instruções já foram copiadas. Quando o ChatGPT abrir, cole o texto no chat do projeto."}</p>
+          <div className="done-actions">{deliveryMode === "clipboard" && <a className="button-primary" href="https://chatgpt.com/">Abrir agora</a>}<button className="button-secondary" onClick={resetFlow}>Voltar ao painel</button></div>
         </section>
       )}
 
