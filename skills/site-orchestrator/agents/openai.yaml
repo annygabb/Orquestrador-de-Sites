@@ -1,0 +1,4 @@
+interface:
+  display_name: "Orquestrador de Sites"
+  short_description: "Escolha skills e referências do projeto"
+  default_prompt: "Abra o seletor de skills do projeto."

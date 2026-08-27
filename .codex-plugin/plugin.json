@@ -1,0 +1,27 @@
+{
+  "name": "orquestrador-de-sites",
+  "version": "1.0.0",
+  "description": "Seleciona e confirma skills e personalizações para criação e revisão de sites.",
+  "author": {
+    "name": "annygabb",
+    "url": "https://github.com/annygabb"
+  },
+  "repository": "https://github.com/annygabb/Orquestrador-de-Sites",
+  "keywords": ["sites", "skills", "mcp", "design", "frontend"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Orquestrador de Sites",
+    "shortDescription": "Escolha skills e referências do projeto",
+    "longDescription": "Interface com checkboxes, contador e confirmação para ativar skills e personalizações na criação e revisão de sites.",
+    "developerName": "annygabb",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Read"],
+    "websiteURL": "https://github.com/annygabb/Orquestrador-de-Sites",
+    "defaultPrompt": [
+      "Mostre minhas skills de projeto.",
+      "Quero personalizar este site.",
+      "Abra o orquestrador de sites."
+    ],
+    "brandColor": "#D94B2B"
+  }
+}
