@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prompts de Imagem para Sites"
+  short_description: "Logos e heroes desktop/mobile"
+  default_prompt: "Crie um prompt de imagem adequado para este site."

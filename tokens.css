@@ -1,0 +1,50 @@
+:root {
+  --color-paper: oklch(98.2% 0.006 240);
+  --color-paper-raised: oklch(99.4% 0.005 245);
+  --color-paper-soft: oklch(95.8% 0.012 245);
+  --color-ink: oklch(22% 0.035 255);
+  --color-ink-soft: oklch(46% 0.035 252);
+  --color-rule: oklch(88% 0.018 248);
+  --color-rule-strong: oklch(72% 0.03 250);
+  --color-accent: oklch(55% 0.19 255);
+  --color-accent-strong: oklch(44% 0.2 258);
+  --color-accent-soft: oklch(94% 0.035 252);
+  --color-success: oklch(57% 0.14 155);
+  --color-danger: oklch(54% 0.18 28);
+  --color-focus: oklch(62% 0.2 252);
+  --color-accent-ink: oklch(99% 0.003 250);
+
+  --font-display: "Space Grotesk Variable", "Arial Narrow", sans-serif;
+  --font-body: "DM Sans Variable", "Segoe UI", sans-serif;
+  --font-utility: "IBM Plex Mono", "Cascadia Code", monospace;
+
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4.5rem;
+  --space-3xl: 8rem;
+  --space-4xl: 9.5rem;
+
+  --text-xs: 0.75rem;
+  --text-2xs: 0.68rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.75rem;
+  --text-display: clamp(2.35rem, 6vw, 4.8rem);
+
+  --radius-sm: 0.5rem;
+  --radius-input: 0.75rem;
+  --radius-card: 1rem;
+  --radius-panel: 1.5rem;
+  --rule-thin: 1px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-short: 140ms;
+  --dur-medium: 220ms;
+  --shadow-dock: 0 1.25rem 3rem oklch(22% 0.035 255 / 0.14);
+}

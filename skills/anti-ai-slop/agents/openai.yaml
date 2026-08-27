@@ -1,0 +1,4 @@
+interface:
+  display_name: "Diretriz Anti-AI-Slop"
+  short_description: "Remove padrões visuais genéricos"
+  default_prompt: "Aplique a Diretriz Anti-AI-Slop neste projeto."

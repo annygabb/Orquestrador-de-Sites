@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
+import "@fontsource-variable/dm-sans";
+import "@fontsource-variable/space-grotesk";
+import "@fontsource/ibm-plex-mono/500.css";
+import "@fontsource/ibm-plex-mono/700.css";
 import { baseURL } from "@/baseUrl";
 import "./globals.css";
+import "../tokens.css";
+import "./panel.css";
 
 export const metadata: Metadata = {
   title: "Orquestrador de Sites",

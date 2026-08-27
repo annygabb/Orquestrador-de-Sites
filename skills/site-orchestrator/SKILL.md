@@ -10,9 +10,12 @@ Quando o usuário pedir para ver, escolher ou alterar as skills do projeto, cham
 Não trate caixas marcadas como ativas antes do retorno de `confirm_skill_selection`. Depois da confirmação:
 
 - aplique somente as instruções devolvidas em `activeSkills` e `personalizations`;
+- trate as skills criadas pelo formulário como instruções próprias do usuário e aplique-as junto das opções do catálogo após a confirmação;
+- use `destinationLink` como referência do projeto, nunca como autorização técnica para escrever em outra conversa;
+- quando o painel estiver incorporado ao ChatGPT, as instruções pertencem à conversa atual; um link de outra conversa não oferece uma API de escrita;
 - mantenha a seleção ativa no contexto da conversa até o usuário confirmar outra;
 - use links de referência como inspiração, não como autorização para copiar conteúdo ou identidade de terceiros;
 - se uma opção depender de uma ferramenta indisponível, explique a limitação e siga com a alternativa mais próxima;
 - preserve o escopo e as autorizações originais do pedido.
 
-Palavras como “skills”, “mostrar opções”, “personalizar sistema”, “trocar seleção” e “orquestrador” devem abrir o seletor quando isso ajudar o fluxo.
+Palavras como “skills”, “adicionar skill”, “mostrar opções”, “personalizar sistema”, “trocar seleção” e “orquestrador” devem abrir o seletor quando isso ajudar o fluxo.

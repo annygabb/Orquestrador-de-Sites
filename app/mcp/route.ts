@@ -68,20 +68,40 @@ const handler = createMcpHandler(async (server) => {
       title: "Confirmar seleção de skills",
       description: "Confirma as opções marcadas e devolve as instruções que devem ser aplicadas ao projeto a partir deste ponto.",
       inputSchema: {
-        selectedIds: z.array(z.string()).min(1).max(catalog.length).describe("IDs selecionados na interface"),
+        selectedIds: z.array(z.string()).max(catalog.length).describe("IDs selecionados no catálogo"),
+        destinationLink: z.string().url().max(2000).describe("Link do chat ou projeto informado na segunda etapa"),
+        customSkills: z.array(z.object({
+          id: z.string().startsWith("custom-").max(120),
+          name: z.string().min(1).max(80),
+          description: z.string().min(1).max(180),
+          directive: z.string().min(1).max(2000),
+          source: z.string().url().optional(),
+        })).max(20).optional().describe("Skills personalizadas adicionadas na interface"),
       },
       annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
       _meta: { ui: { visibility: ["app"] } },
     },
-    async ({ selectedIds }) => {
+    async ({ selectedIds, destinationLink, customSkills = [] }) => {
       const uniqueIds = [...new Set(selectedIds)];
-      const selectedItems = uniqueIds.map((id) => itemById.get(id)).filter((item) => item !== undefined);
-      if (selectedItems.length !== uniqueIds.length) {
+      const catalogItems = uniqueIds.map((id) => itemById.get(id)).filter((item) => item !== undefined);
+      if (catalogItems.length !== uniqueIds.length) {
         return { isError: true, content: [{ type: "text" as const, text: "A seleção contém uma opção desconhecida. Abra o seletor novamente." }] };
+      }
+      const uniqueCustomSkills = [...new Map(customSkills.map((item) => [item.id, item])).values()];
+      const customItems = uniqueCustomSkills.map((item) => ({
+        ...item,
+        kind: "skill" as const,
+        group: "Personalizadas",
+        badge: "Sua skill",
+      }));
+      const selectedItems = [...catalogItems, ...customItems];
+      if (selectedItems.length === 0) {
+        return { isError: true, content: [{ type: "text" as const, text: "Selecione pelo menos uma opção antes de confirmar." }] };
       }
       const activeSkills = selectedItems.filter((item) => item.kind === "skill");
       const personalizations = selectedItems.filter((item) => item.kind === "personalization");
       const message = `Seleção confirmada. Aplique a partir de agora estas opções neste projeto: ${selectedItems.map((item) => item.name).join(", ")}. Considere as instruções devolvidas pelo orquestrador e só altere a seleção após uma nova confirmação.`;
+      const prompt = `Aplique as skills e personalizações confirmadas abaixo ao projeto desta conversa.\n\nDestino informado pela usuária: ${destinationLink}\n\nSKILLS CONFIRMADAS\n${selectedItems.map((item, index) => `${index + 1}. ${item.name}\n${item.directive}${item.source ? `\nFonte: ${item.source}` : ""}`).join("\n\n")}\n\nAntes de alterar qualquer projeto, analise o contexto e preserve o escopo, os requisitos e as autorizações já definidos por Anny Gabrielly. Se o link apontar para uma conversa diferente, use-o somente como referência: faça as mudanças na conversa atual ou peça os arquivos/link público necessários.`;
       return {
         content: [
           { type: "text" as const, text: message },
@@ -90,7 +110,9 @@ const handler = createMcpHandler(async (server) => {
         structuredContent: {
           confirmed: true,
           message,
-          selectedIds: uniqueIds,
+          prompt,
+          destinationLink,
+          selectedIds: selectedItems.map((item) => item.id),
           activeSkills: activeSkills.map(({ id, name, directive, source }) => ({ id, name, directive, source })),
           personalizations: personalizations.map(({ id, name, directive, source }) => ({ id, name, directive, source })),
         },

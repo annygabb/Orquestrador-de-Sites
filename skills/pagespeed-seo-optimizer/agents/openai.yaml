@@ -1,0 +1,4 @@
+interface:
+  display_name: "PageSpeed & SEO Optimizer"
+  short_description: "Performance e SEO com validação"
+  default_prompt: "Audite e otimize este site com a PageSpeed & SEO Optimizer."

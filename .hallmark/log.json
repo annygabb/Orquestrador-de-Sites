@@ -1,0 +1,11 @@
+[
+  {
+    "date": "2026-08-27",
+    "macrostructure": "Workbench",
+    "theme": "custom",
+    "theme_axes": "cool-paper / technical-display / cobalt-accent",
+    "enrichment": "none",
+    "brief": "Painel mobile-first para selecionar skills e enviar ao chat",
+    "scope": "single-page"
+  }
+]
