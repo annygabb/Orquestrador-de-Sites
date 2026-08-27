@@ -1,6 +1,7 @@
 "use client";
 
-import { catalog, type CatalogItem, type CatalogKind } from "@/lib/catalog";
+import { catalog, type CatalogKind } from "@/lib/catalog";
+import Script from "next/script";
 import { type FormEvent, useMemo, useState } from "react";
 import { useMcpApp } from "./hooks/use-mcp-app";
 
@@ -10,6 +11,7 @@ type SkillDraft = { name: string; description: string; directive: string; source
 type DeliveryMode = "chat" | "clipboard";
 
 const emptyDraft: SkillDraft = { name: "", description: "", directive: "", source: "" };
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 export default function Home() {
   const { app, connected } = useMcpApp();
@@ -17,15 +19,17 @@ export default function Home() {
   const [tab, setTab] = useState<Tab>("all");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [customSkills, setCustomSkills] = useState<CatalogItem[]>([]);
   const [showSkillForm, setShowSkillForm] = useState(false);
   const [draft, setDraft] = useState<SkillDraft>(emptyDraft);
+  const [proposalStatus, setProposalStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [proposalMessage, setProposalMessage] = useState("");
+  const [proposalUrl, setProposalUrl] = useState("");
   const [destinationLink, setDestinationLink] = useState("");
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle");
   const [deliveryMode, setDeliveryMode] = useState<DeliveryMode>("chat");
   const [preparedPrompt, setPreparedPrompt] = useState("");
 
-  const allItems = useMemo(() => [...customSkills, ...catalog], [customSkills]);
+  const allItems = catalog;
   const selectedItems = useMemo(() => allItems.filter((item) => selected.has(item.id)), [allItems, selected]);
 
   const visible = useMemo(() => {
@@ -46,29 +50,51 @@ export default function Home() {
     setStatus("idle");
   }
 
-  function addCustomSkill(event: FormEvent<HTMLFormElement>) {
+  async function addCustomSkill(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formElement = event.currentTarget;
     const name = draft.name.trim();
     const description = draft.description.trim();
     const directive = draft.directive.trim();
-    if (!name || !description || !directive) return;
-    const id = `custom-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-    const skill: CatalogItem = { id, name, kind: "skill", group: "Personalizadas", description, directive, source: draft.source.trim() || undefined, badge: "Sua skill" };
-    setCustomSkills((current) => [skill, ...current]);
-    setSelected((current) => new Set(current).add(id));
-    setDraft(emptyDraft);
-    setShowSkillForm(false);
-    setTab("skill");
-    setQuery("");
-  }
-
-  function removeCustomSkill(id: string) {
-    setCustomSkills((current) => current.filter((item) => item.id !== id));
-    setSelected((current) => {
-      const next = new Set(current);
-      next.delete(id);
-      return next;
-    });
+    const source = draft.source.trim();
+    const formData = new FormData(formElement);
+    const turnstileToken = String(formData.get("cf-turnstile-response") ?? "");
+    const website = String(formData.get("website") ?? "");
+    if (!name || !description || !directive || !source) return;
+    if (!turnstileToken) {
+      setProposalStatus("error");
+      setProposalMessage(turnstileSiteKey ? "Conclua a verificação anti-spam antes de enviar." : "O envio protegido ainda precisa ser configurado pela administradora.");
+      return;
+    }
+    setProposalStatus("submitting");
+    setProposalMessage("");
+    setProposalUrl("");
+    try {
+      const payload = { name, description, directive, source, turnstileToken, website };
+      let data: { success?: boolean; message?: string; pullRequestUrl?: string };
+      if (app) {
+        const result = await app.callServerTool({ name: "submit_skill_proposal", arguments: payload });
+        data = result.structuredContent as typeof data;
+      } else {
+        const response = await fetch("/api/skills/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        data = await response.json() as typeof data;
+        if (!response.ok) throw new Error(data.message || "Não foi possível enviar a proposta.");
+      }
+      if (!data?.success) throw new Error(data?.message || "Não foi possível enviar a proposta.");
+      setProposalStatus("success");
+      setProposalMessage("Skill enviada para aprovação");
+      setProposalUrl(data.pullRequestUrl ?? "");
+      setDraft(emptyDraft);
+      const widget = formElement.querySelector<HTMLElement>(".cf-turnstile");
+      if (widget && "turnstile" in window) (window as Window & { turnstile?: { reset: (element?: HTMLElement) => void } }).turnstile?.reset(widget);
+    } catch (error) {
+      setProposalStatus("error");
+      setProposalMessage(error instanceof Error ? error.message : "Não foi possível enviar a skill para aprovação.");
+    }
   }
 
   function buildPrompt(link: string) {
@@ -83,14 +109,11 @@ export default function Home() {
     const prompt = buildPrompt(destinationLink.trim());
     try {
       if (app) {
-        const customSelected = customSkills.filter((item) => selected.has(item.id));
-        const catalogIds = [...selected].filter((id) => !id.startsWith("custom-"));
         const result = await app.callServerTool({
           name: "confirm_skill_selection",
           arguments: {
-            selectedIds: catalogIds,
+            selectedIds: [...selected],
             destinationLink: destinationLink.trim(),
-            customSkills: customSelected.map(({ id, name, description, directive, source }) => ({ id, name, description, directive, source })),
           },
         });
         const data = result.structuredContent as { prompt?: string } | undefined;
@@ -171,13 +194,19 @@ export default function Home() {
 
           {showSkillForm && (
             <section className="skill-builder" aria-labelledby="skill-builder-title">
-              <div className="skill-builder-copy"><h2 id="skill-builder-title">Adicionar uma skill própria</h2><p>Ela entra na lista já selecionada e só será aplicada depois da confirmação.</p></div>
+              <div className="skill-builder-copy"><h2 id="skill-builder-title">Propor uma nova skill</h2><p>O sistema criará um Pull Request no GitHub. Ela só aparecerá para todos depois da revisão e aprovação de Anny.</p></div>
               <form onSubmit={addCustomSkill} className="skill-builder-form">
-                <label><span>Nome *</span><input required maxLength={80} value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} placeholder="Ex.: Revisão para clínicas" /></label>
-                <label><span>Descrição curta *</span><input required maxLength={180} value={draft.description} onChange={(event) => setDraft({ ...draft, description: event.target.value })} placeholder="O que ela resolve?" /></label>
-                <label className="wide"><span>Instruções para o ChatGPT *</span><textarea required maxLength={2000} rows={5} value={draft.directive} onChange={(event) => setDraft({ ...draft, directive: event.target.value })} placeholder="Descreva como analisar ou modificar o projeto." /></label>
-                <label className="wide"><span>Link da fonte <small>opcional</small></span><input type="url" value={draft.source} onChange={(event) => setDraft({ ...draft, source: event.target.value })} placeholder="https://github.com/..." /></label>
-                <div className="builder-actions wide"><button type="button" className="button-quiet" onClick={() => { setShowSkillForm(false); setDraft(emptyDraft); }}>Cancelar</button><button type="submit" className="button-primary">Adicionar e selecionar</button></div>
+                <label><span>Nome *</span><input required minLength={3} maxLength={80} value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} placeholder="Ex.: Revisão para clínicas" /></label>
+                <label><span>Descrição curta *</span><input required minLength={20} maxLength={240} value={draft.description} onChange={(event) => setDraft({ ...draft, description: event.target.value })} placeholder="Quando essa skill deve ser usada?" /></label>
+                <label className="wide"><span>Instruções para o ChatGPT *</span><textarea required minLength={40} maxLength={3000} rows={5} value={draft.directive} onChange={(event) => setDraft({ ...draft, directive: event.target.value })} placeholder="Descreva o objetivo, o fluxo e os limites reais da skill." /></label>
+                <label className="wide"><span>Repositório da fonte *</span><input type="url" required maxLength={500} value={draft.source} onChange={(event) => setDraft({ ...draft, source: event.target.value })} placeholder="https://github.com/autor/skill" /></label>
+                <label className="proposal-honeypot" aria-hidden="true"><span>Não preencha</span><input name="website" tabIndex={-1} autoComplete="off" /></label>
+                <div className="wide proposal-verification">
+                  {turnstileSiteKey ? <><Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" strategy="afterInteractive" /><div className="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="light" data-action="skill_proposal" /></> : <p>A proteção anti-spam precisa ser configurada antes de aceitar propostas.</p>}
+                </div>
+                {proposalStatus === "success" && <div className="proposal-feedback proposal-success wide" role="status"><strong>Skill enviada para aprovação</strong><span>Ela entrará no catálogo global somente após a revisão e o merge por Anny.</span>{proposalUrl && <a href={proposalUrl} target="_blank" rel="noopener noreferrer">Acompanhar Pull Request</a>}</div>}
+                {proposalStatus === "error" && <div className="proposal-feedback proposal-error wide" role="alert"><strong>Proposta não enviada</strong><span>{proposalMessage}</span></div>}
+                <div className="builder-actions wide"><button type="button" className="button-quiet" onClick={() => { setShowSkillForm(false); setDraft(emptyDraft); setProposalStatus("idle"); }}>Cancelar</button><button type="submit" className="button-primary" disabled={proposalStatus === "submitting" || !turnstileSiteKey}>{proposalStatus === "submitting" ? "Enviando para aprovação…" : "Enviar para aprovação"}</button></div>
               </form>
             </section>
           )}
@@ -192,7 +221,7 @@ export default function Home() {
                     <span className="selection-box" aria-hidden="true">{checked ? "✓" : ""}</span>
                     <span className="skill-content"><span className="skill-meta"><span>{item.group}</span>{item.badge && <em>{item.badge}</em>}</span><strong>{item.name}</strong><span>{item.description}</span></span>
                   </label>
-                  <div className="card-links">{item.source && <a href={item.source} target="_blank" rel="noopener noreferrer">Ver fonte</a>}{item.id.startsWith("custom-") && <button type="button" onClick={() => removeCustomSkill(item.id)}>Remover</button>}</div>
+                  <div className="card-links">{item.source && <a href={item.source} target="_blank" rel="noopener noreferrer">Ver fonte</a>}</div>
                 </article>
               );
             })}
