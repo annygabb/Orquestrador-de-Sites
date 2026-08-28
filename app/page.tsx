@@ -2,6 +2,7 @@
 
 import { catalog, type CatalogKind } from "@/lib/catalog";
 import { buildSelectionPrompt, externalResourceNotice } from "@/lib/selection-prompt";
+import { addVisibleSelection, paginateCatalog } from "@/lib/panel-layout";
 import Script from "next/script";
 import { type FormEvent, useMemo, useRef, useState } from "react";
 import { useMcpApp } from "./hooks/use-mcp-app";
@@ -17,7 +18,12 @@ const emptyDraft: SkillDraft = { name: "", description: "", directive: "", sourc
 const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 export default function Home() {
-  const { app, connected } = useMcpApp();
+  const { app, connected, embedded, displayMode, canExpand, toggleDisplayMode } = useMcpApp();
+  const [page, setPage] = useState(0);
+  const [selectedOnly, setSelectedOnly] = useState(false);
+  const [expanding, setExpanding] = useState(false);
+  const [displayMessage, setDisplayMessage] = useState("");
+  const catalogRef = useRef<HTMLElement>(null);
   const [stage, setStage] = useState<Stage>("select");
   const [tab, setTab] = useState<Tab>("all");
   const [query, setQuery] = useState("");
@@ -43,9 +49,29 @@ export default function Home() {
     return allItems.filter((item) => {
       const matchesTab = tab === "all" || item.kind === tab;
       const haystack = `${item.name} ${item.description} ${item.group}`.toLocaleLowerCase("pt-BR");
-      return matchesTab && (!term || haystack.includes(term));
+      return matchesTab && (!term || haystack.includes(term)) && (!selectedOnly || selected.has(item.id));
     });
-  }, [allItems, query, tab]);
+  }, [allItems, query, tab, selectedOnly, selected]);
+  const pagination = paginateCatalog(visible, page, embedded ? (displayMode === "fullscreen" ? 12 : 6) : Math.max(1, visible.length));
+
+  function changePage(next: number) {
+    setPage(next);
+    catalogRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
+    catalogRef.current?.focus({ preventScroll: true });
+  }
+
+  async function expandPanel() {
+    setExpanding(true);
+    setDisplayMessage("");
+    try {
+      if (!await toggleDisplayMode()) setDisplayMessage("Este chat manteve o tamanho atual. Você pode continuar usando o painel aqui.");
+      setPage(0);
+    } catch {
+      setDisplayMessage("Não foi possível ampliar agora. Sua seleção foi mantida.");
+    } finally {
+      setExpanding(false);
+    }
+  }
 
   function toggle(id: string) {
     setSelected((current) => {
@@ -165,11 +191,18 @@ export default function Home() {
   }
 
   return (
-    <main className="panel-v2">
+    <main className="panel-v2" data-embedded={embedded || undefined}>
       <header className="panel-header">
         <a className="wordmark" href="#top" aria-label="Orquestrador de Sites — início"><span className="wordmark-mark">OS</span><span>Orquestrador de Sites</span></a>
-        <span className={`host-status ${connected ? "is-connected" : ""}`}><span aria-hidden="true" />{connected ? "Dentro do ChatGPT" : "Modo navegador"}</span>
+        <div className="panel-host-actions">
+          <span className={`host-status ${connected ? "is-connected" : ""}`}><span aria-hidden="true" />{connected ? "Conectado ao chat" : embedded ? "Conectando ao chat…" : "Modo navegador"}</span>
+          {connected && (canExpand || displayMode === "fullscreen") && <button type="button" className="button-secondary expand-panel" disabled={expanding} onClick={expandPanel}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" /></svg>
+            {expanding ? "Ajustando…" : displayMode === "fullscreen" ? "Recolher painel" : "Ampliar painel"}
+          </button>}
+        </div>
       </header>
+      {displayMessage && <p className="external-resource-note" role="status">{displayMessage}</p>}
 
       <div className="flow-line" aria-label="Etapas do envio">
         <button className={stage === "select" ? "is-current" : "is-complete"} onClick={() => setStage("select")}><span>1</span> Selecionar</button>
@@ -182,15 +215,15 @@ export default function Home() {
       {stage === "select" && (
         <>
           <section className="panel-intro" id="top">
-            <div><p>Monte seu conjunto de trabalho</p><h1>Escolha as skills que vão orientar o projeto.</h1></div>
-            <p className="panel-lead">Marque uma ou várias opções. Assim que a primeira for selecionada, a confirmação será liberada.</p>
+            <div><p>Monte seu conjunto de trabalho</p><h1>{embedded ? "Skills para o seu projeto" : "Escolha as skills que vão orientar o projeto."}</h1></div>
+            <p className="panel-lead">{embedded ? "Escolha, compare e confirme. Nada é aplicado antes da sua confirmação." : "Marque uma ou várias opções. Assim que a primeira for selecionada, a confirmação será liberada."}</p>
           </section>
 
           <section className="catalog-controls" aria-label="Filtros do catálogo">
             <div className="tabs" role="tablist" aria-label="Tipo de opção">
-              {([['all', 'Tudo'], ['skill', 'Skills'], ['personalization', 'Personalização']] as const).map(([value, label]) => <button key={value} role="tab" aria-selected={tab === value} className={tab === value ? "active" : ""} onClick={() => setTab(value)}>{label}</button>)}
+              {([['all', 'Tudo'], ['skill', 'Skills'], ['personalization', 'Personalização']] as const).map(([value, label]) => <button key={value} role="tab" aria-selected={tab === value} className={tab === value ? "active" : ""} onClick={() => { setTab(value); setPage(0); }}>{label}</button>)}
             </div>
-            <label className="search-field"><span className="sr-only">Pesquisar opções</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Pesquisar skill ou categoria" /></label>
+            <label className="search-field"><span className="sr-only">Pesquisar opções</span><input type="search" value={query} onChange={(event) => { setQuery(event.target.value); setPage(0); }} placeholder="Pesquisar skill ou categoria" /></label>
           </section>
 
           {tab === "personalization" && <p className="external-resource-note">{externalResourceNotice}</p>}
@@ -199,7 +232,8 @@ export default function Home() {
             <span><strong>{visible.length}</strong> opções encontradas</span>
             <div>
               <button className="button-secondary" disabled={proposalStatus === "submitting"} onClick={() => setShowSkillForm((current) => !current)} aria-expanded={showSkillForm}>{showSkillForm ? "Fechar formulário" : "Adicionar skill"}</button>
-              <button className="button-quiet" onClick={() => setSelected(new Set(visible.map((item) => item.id)))}>Selecionar visíveis</button>
+              <button className="button-quiet" aria-pressed={selectedOnly} onClick={() => { setSelectedOnly(!selectedOnly); setPage(0); }}>Selecionadas ({selected.size})</button>
+              <button className="button-quiet" disabled={pagination.items.length === 0} onClick={() => setSelected((current) => addVisibleSelection(current, pagination.items.map((item) => item.id)))}>Selecionar visíveis</button>
               <button className="button-quiet" onClick={() => setSelected(new Set())} disabled={selected.size === 0}>Limpar</button>
             </div>
           </div>
@@ -234,8 +268,8 @@ export default function Home() {
             </section>
           )}
 
-          <section className="skill-grid" aria-live="polite">
-            {visible.map((item) => {
+          <section className="skill-grid" ref={catalogRef} tabIndex={-1} aria-label="Opções do catálogo">
+            {pagination.items.map((item) => {
               const checked = selected.has(item.id);
               return (
                 <article className={`skill-card ${checked ? "is-selected" : ""}`} key={item.id}>
@@ -249,6 +283,11 @@ export default function Home() {
               );
             })}
           </section>
+          {visible.length === 0 && <div className="catalog-empty" role="status"><strong>{selectedOnly ? "Nenhuma seleção neste filtro." : "Nenhuma opção encontrada."}</strong><p>Tente outro termo ou volte ao catálogo completo.</p><button className="button-secondary" onClick={() => { setQuery(""); setTab("all"); setSelectedOnly(false); setPage(0); }}>Ver todas as opções</button></div>}
+          {embedded && visible.length > 0 && <nav className="catalog-pagination" aria-label="Páginas do catálogo">
+            <span role="status">{pagination.start + 1}–{pagination.start + pagination.items.length} de {visible.length} opções</span>
+            {pagination.totalPages > 1 && <div><button className="button-secondary" disabled={pagination.currentPage === 0} onClick={() => changePage(pagination.currentPage - 1)} aria-label="Página anterior">←</button><span>{pagination.currentPage + 1} / {pagination.totalPages}</span><button className="button-secondary" disabled={pagination.currentPage + 1 === pagination.totalPages} onClick={() => changePage(pagination.currentPage + 1)} aria-label="Próxima página">→</button></div>}
+          </nav>}
         </>
       )}
 

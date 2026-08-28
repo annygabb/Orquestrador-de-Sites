@@ -1029,3 +1029,117 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Catalog workbench: use the available width, not the device's screen size. */
+.panel-host-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.expand-panel { gap: var(--space-2xs); }
+.panel-v2 .skill-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  scroll-margin-top: var(--space-sm);
+}
+.catalog-actions .button-quiet[aria-pressed="true"] {
+  color: var(--color-ink);
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+.catalog-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+  color: var(--color-ink-soft);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+.catalog-pagination > div { display: flex; align-items: center; gap: var(--space-xs); }
+.catalog-pagination button { min-width: 2.75rem; }
+.catalog-empty {
+  padding: var(--space-lg) 0;
+  color: var(--color-ink-soft);
+  line-height: 1.5;
+}
+.catalog-empty strong { color: var(--color-ink); }
+.panel-v2 .card-links a { display: inline-flex; align-items: center; min-height: 2.75rem; white-space: normal; }
+
+/* MCP HTML is marked before hydration. Never couple content height to the
+   iframe's height: the host uses our content height to resize that iframe. */
+html[data-embedded="true"],
+html[data-embedded="true"] body { min-height: 0; height: auto; }
+html[data-embedded="true"] .panel-v2 {
+  width: 100%;
+  min-height: 0;
+  padding: 1rem;
+}
+html[data-embedded="true"] .panel-header { padding-bottom: var(--space-xs); }
+html[data-embedded="true"] .wordmark { font-size: var(--text-sm); }
+html[data-embedded="true"] .flow-line { margin: var(--space-sm) 0; max-width: 30rem; }
+html[data-embedded="true"] .flow-line button { font-size: var(--text-xs); gap: var(--space-3xs); min-height: 2.75rem; }
+html[data-embedded="true"] .flow-line button > span { width: 1.5rem; height: 1.5rem; }
+html[data-embedded="true"] .panel-intro { grid-template-columns: 1fr; gap: var(--space-2xs); margin-bottom: var(--space-sm); }
+html[data-embedded="true"] .panel-intro > div > p { display: none; }
+html[data-embedded="true"] .panel-intro h1,
+html[data-embedded="true"] .destination-main h1,
+html[data-embedded="true"] .done-screen h1 { font-size: clamp(1.5rem, 3.5vw, 2.25rem); line-height: 1.15; letter-spacing: -0.035em; }
+html[data-embedded="true"] .panel-lead { font-size: var(--text-sm); }
+html[data-embedded="true"] .catalog-controls { padding: var(--space-2xs); gap: var(--space-2xs); }
+html[data-embedded="true"] .catalog-actions { padding: var(--space-xs) 0; gap: var(--space-2xs); flex-wrap: wrap; }
+html[data-embedded="true"] .catalog-actions > div { display: flex; flex-wrap: wrap; gap: var(--space-3xs); width: auto; }
+html[data-embedded="true"] .catalog-actions button { padding-inline: var(--space-2xs); font-size: var(--text-xs); }
+html[data-embedded="true"] .skill-card { min-height: 0; border-radius: var(--radius-input); }
+html[data-embedded="true"] .skill-card > label { padding: var(--space-sm); gap: var(--space-2xs); }
+html[data-embedded="true"] .skill-meta { margin-bottom: var(--space-2xs); font-size: var(--text-xs); letter-spacing: 0; text-transform: none; }
+html[data-embedded="true"] .skill-content > strong { font-size: 1.0625rem; line-height: 1.3; }
+html[data-embedded="true"] .card-links { margin-inline: var(--space-sm); padding: 0; }
+html[data-embedded="true"] .project-credit { margin-top: var(--space-md); padding-top: var(--space-sm); }
+html[data-embedded="true"] .project-credit p { font-size: var(--text-xs); line-height: 1.5; }
+html[data-embedded="true"] .selection-dock {
+  position: sticky;
+  left: auto;
+  right: auto;
+  bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+  width: 100%;
+  margin-top: var(--space-sm);
+  padding: var(--space-xs);
+  gap: var(--space-xs);
+  border-radius: var(--radius-input);
+  box-shadow: 0 0.25rem 1rem oklch(22% 0.035 255 / 0.08);
+}
+html[data-embedded="true"] .selection-dock > div { flex-direction: row; align-items: center; gap: var(--space-2xs); }
+html[data-embedded="true"] .selection-dock > div strong { font-size: var(--text-lg); }
+html[data-embedded="true"] .selection-dock .button-primary { white-space: normal; min-height: 2.75rem; }
+html[data-embedded="true"] .destination-screen,
+html[data-embedded="true"] .done-screen { min-height: 0; padding-block: var(--space-sm); }
+html[data-embedded="true"] .back-button { margin-bottom: var(--space-sm); min-height: 2.75rem; }
+html[data-embedded="true"] .destination-form { margin-top: var(--space-sm); }
+html[data-embedded="true"] .selection-review ul { max-height: none; overflow: visible; }
+html[data-embedded="true"] .done-screen { gap: var(--space-xs); }
+html[data-embedded="true"] .done-mark { margin-bottom: 0; }
+html[data-embedded="true"] .skill-builder { padding: var(--space-sm); gap: var(--space-sm); }
+
+@media (min-width: 40rem) {
+  html[data-embedded="true"] .catalog-controls { flex-direction: row; align-items: center; }
+  html[data-embedded="true"] .search-field { flex: 1; }
+  html[data-embedded="true"] .panel-v2 .tabs { display: inline-flex; }
+  html[data-embedded="true"] .catalog-actions { flex-direction: row; align-items: center; }
+}
+@media (max-width: 40rem) {
+  html[data-embedded="true"] .panel-v2 { padding: var(--space-xs); }
+  html[data-embedded="true"] .selection-dock { grid-template-columns: 1fr auto; }
+  html[data-embedded="true"] .selection-dock > p { display: none; }
+  html[data-embedded="true"] .wordmark > span:last-child { display: inline; }
+  html[data-embedded="true"] .panel-header { flex-wrap: wrap; }
+  html[data-embedded="true"] .panel-host-actions { margin-left: auto; }
+  html[data-embedded="true"] .panel-v2 input,
+  html[data-embedded="true"] .panel-v2 textarea { font-size: 1rem; }
+  html[data-embedded="true"] .skill-card > label { padding: var(--space-xs); }
+  html[data-embedded="true"] .flow-rule { margin-inline: var(--space-3xs); }
+}

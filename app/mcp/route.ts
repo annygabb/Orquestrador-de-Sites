@@ -1,4 +1,5 @@
 import { baseURL } from "@/baseUrl";
+import { prepareMcpPage } from "@/lib/mcp-page";
 import { catalog, itemById } from "@/lib/catalog";
 import { buildSelectionPrompt, externalResourceNotice } from "@/lib/selection-prompt";
 import { ProposalError, skillProposalSchema, submitSkillProposal, validateTurnstile } from "@/lib/skill-proposals";
@@ -10,12 +11,12 @@ import {
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
-const RESOURCE_URI = "ui://orquestrador-de-sites/seletor.html?v=5";
+const RESOURCE_URI = "ui://orquestrador-de-sites/seletor.html?v=6";
 
 async function fetchPageHtml() {
   const response = await fetch(baseURL);
   if (!response.ok) throw new Error(`Não foi possível carregar a interface: ${response.status}`);
-  return response.text();
+  return prepareMcpPage(await response.text());
 }
 
 const handler = createMcpHandler(async (server) => {
