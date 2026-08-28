@@ -238,9 +238,10 @@
     "name": "Background gradient",
     "kind": "personalization",
     "group": "Fundos",
-    "description": "Usa a referência enviada para orientar um fundo em gradiente.",
-    "directive": "Use a referência de background gradient como inspiração; adapte cores, contraste e movimento à identidade do projeto sem copiar literalmente.",
-    "source": "https://vt.tiktok.com/ZSVHL6Lky/"
+    "description": "Fundos em gradiente e texturas do Grainient para inspiração visual. Recurso externo, não é uma skill.",
+    "directive": "Consulte esta referência externa apenas quando pertinente ao projeto. Não é uma skill e não deve ser instalada ou executada. Confira a licença, os créditos e eventuais custos diretamente na fonte antes de utilizar qualquer material.",
+    "source": "https://grainient.supply/",
+    "badge": "Recurso externo"
   },
   {
     "id": "shader-gradient",
@@ -253,12 +254,13 @@
   },
   {
     "id": "design-inspiration",
-    "name": "Inspiração de design",
+    "name": "Combinação de fontes — Typ.io",
     "kind": "personalization",
-    "group": "Referências",
-    "description": "Referência geral para direção visual e composição.",
-    "directive": "Estude a referência de design e extraia princípios de composição, tipografia, ritmo e atmosfera; não replique marcas ou conteúdo protegido.",
-    "source": "https://vt.tiktok.com/ZSVHLfnRh/"
+    "group": "Tipografia",
+    "description": "Inspiração para combinar fontes e construir hierarquias tipográficas. Recurso externo, não é uma skill.",
+    "directive": "Consulte esta referência externa apenas quando pertinente ao projeto. Não é uma skill e não deve ser instalada ou executada. Confira a licença, os créditos e eventuais custos diretamente na fonte antes de utilizar qualquer material.",
+    "source": "https://typ.io/",
+    "badge": "Recurso externo"
   },
   {
     "id": "animation-inspiration",
@@ -332,5 +334,55 @@
     "kind": "skill",
     "group": "Comunidade",
     "badge": "Comunidade"
+  },
+  {
+    "id": "velvetyne-fonts",
+    "name": "Fontes expressivas — Velvetyne",
+    "kind": "personalization",
+    "group": "Tipografia",
+    "description": "Referência externa para explorar fontes diferentes e expressivas. Recurso externo, não é uma skill.",
+    "directive": "Consulte esta referência externa apenas quando pertinente ao projeto. Não é uma skill e não deve ser instalada ou executada. Confira a licença, os créditos e eventuais custos diretamente na fonte antes de utilizar qualquer material.",
+    "source": "https://velvetyne.fr/",
+    "badge": "Recurso externo"
+  },
+  {
+    "id": "nappy-photos",
+    "name": "Fotos com diversidade — Nappy",
+    "kind": "personalization",
+    "group": "Fotografia",
+    "description": "Fotografias de pessoas com diversidade e representatividade. Recurso externo, não é uma skill.",
+    "directive": "Consulte esta referência externa apenas quando pertinente ao projeto. Não é uma skill e não deve ser instalada ou executada. Confira a licença, os créditos e eventuais custos diretamente na fonte antes de utilizar qualquer material.",
+    "source": "https://nappy.co/",
+    "badge": "Recurso externo"
+  },
+  {
+    "id": "foodiesfeed-photos",
+    "name": "Fotos de comidas — Foodiesfeed",
+    "kind": "personalization",
+    "group": "Fotografia",
+    "description": "Referência de imagens de alimentos e composição gastronômica. Recurso externo, não é uma skill.",
+    "directive": "Consulte esta referência externa apenas quando pertinente ao projeto. Não é uma skill e não deve ser instalada ou executada. Confira a licença, os créditos e eventuais custos diretamente na fonte antes de utilizar qualquer material.",
+    "source": "https://www.foodiesfeed.com/pt",
+    "badge": "Recurso externo"
+  },
+  {
+    "id": "lifeofpix-photos",
+    "name": "Fotos conceituais — Life of Pix",
+    "kind": "personalization",
+    "group": "Fotografia",
+    "description": "Referência fotográfica para composições conceituais e atmosferas visuais. Recurso externo, não é uma skill.",
+    "directive": "Consulte esta referência externa apenas quando pertinente ao projeto. Não é uma skill e não deve ser instalada ou executada. Confira a licença, os créditos e eventuais custos diretamente na fonte antes de utilizar qualquer material.",
+    "source": "https://www.lifeofpix.com/",
+    "badge": "Recurso externo"
+  },
+  {
+    "id": "stocksy-photos",
+    "name": "Fotografia autoral — Stocksy",
+    "kind": "personalization",
+    "group": "Fotografia",
+    "description": "Referência de fotografia autoral e estética editorial, com licenciamento próprio. Recurso externo, não é uma skill.",
+    "directive": "Consulte esta referência externa apenas quando pertinente ao projeto. Não é uma skill e não deve ser instalada ou executada. Confira a licença, os créditos e eventuais custos diretamente na fonte antes de utilizar qualquer material.",
+    "source": "https://www.stocksy.com/",
+    "badge": "Recurso externo"
   }
 ]
