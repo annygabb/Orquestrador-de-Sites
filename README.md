@@ -59,6 +59,16 @@ APP_ORIGIN=https://orquestrador-de-sites.vercel.app
 
 Depois de salvar as variáveis, faça um novo deployment. O segredo e a chave privada ficam apenas no backend da Vercel e nunca são enviados ao navegador.
 
+### Renovação e diagnóstico do Turnstile
+
+- O token da Cloudflare é válido por no máximo **5 minutos** e tem **uso único**. O servidor executa Siteverify para cada proposta; não há sessão de confiança de 25 minutos nem dispensa de validação.
+- O painel renova tokens antes de expirar, ao voltar de uma aba suspensa e depois de cada tentativa de envio. Se necessário, espera um token novo antes de enviar, sem apagar o formulário e sem repetir automaticamente uma criação de PR.
+- Após **25 minutos no painel**, é solicitado **Verificar novamente**. Esse é um controle adicional de interface: não altera a validade do token. A Cloudflare pode pedir interação antes disso.
+- A interface usa renderização explícita para funcionar ao fechar e reabrir o formulário. Não persiste tokens no navegador.
+- Erros de chave secreta, domínio, ação, indisponibilidade e token expirado são diferenciados. Uma marca de sucesso no widget ainda precisa ser confirmada pelo servidor.
+- Confira se as duas chaves são do **mesmo widget**. Para a produção atual, configure o hostname `orquestradordesites.vercel.app`, `TURNSTILE_EXPECTED_HOSTNAME=orquestradordesites.vercel.app`, `APP_ORIGIN=https://orquestradordesites.vercel.app` e `BASE_URL=https://orquestradordesites.vercel.app`.
+- O limite de envio existente continua ativo. Os testes usam respostas simuladas da Cloudflare; não substituem o teste com as credenciais reais em produção.
+
 ## Conectar no ChatGPT
 
 1. Abra **Configurações → Plugins**.
@@ -94,8 +104,11 @@ Validação:
 ```bash
 npm run typecheck
 npm run validate:skills
+npm run test:turnstile
 npm run build
 ```
+
+Teste opcional de interface (requer Playwright e Chromium instalados): inicie o servidor com `NEXT_PUBLIC_TURNSTILE_SITE_KEY=local-test-site-key npm run dev -- --hostname 127.0.0.1 --port 3100` e execute `node tests/turnstile.browser.mjs`. Esse teste simula a Cloudflare e o envio; não cria propostas reais. Não use chaves de teste em produção.
 
 ## Fontes externas do catálogo
 

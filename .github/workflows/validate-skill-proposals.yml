@@ -6,6 +6,11 @@ on:
       - "data/skills.json"
       - "skills/**"
       - "lib/catalog.ts"
+      - "lib/skill-proposals.ts"
+      - "lib/turnstile-clock.ts"
+      - "tests/**"
+      - "package.json"
+      - "package-lock.json"
       - "app/**"
 
 permissions:
@@ -32,6 +37,9 @@ jobs:
 
       - name: Verificar TypeScript
         run: npm run typecheck
+
+      - name: Testar validação e renovação do Turnstile
+        run: npm run test:turnstile
 
       - name: Gerar build de produção
         run: npm run build

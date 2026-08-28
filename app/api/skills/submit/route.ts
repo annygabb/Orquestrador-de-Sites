@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       pullRequestUrl: result.pullRequestUrl,
     }, { status: 201 });
   } catch (error) {
-    if (error instanceof ProposalError) return NextResponse.json({ success: false, message: error.message }, { status: error.status });
+    if (error instanceof ProposalError) return NextResponse.json({ success: false, message: error.message, code: error.code }, { status: error.status });
     if (error instanceof z.ZodError) return NextResponse.json({ success: false, message: "Revise os campos da proposta e tente novamente." }, { status: 400 });
     console.error("[skill-proposal]", error);
     return NextResponse.json({ success: false, message: "Não foi possível enviar a skill para aprovação." }, { status: 500 });

@@ -402,6 +402,22 @@ body {
 
 .proposal-verification {
   min-height: 4.25rem;
+  min-width: 0;
+}
+
+.verification-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+  font-size: var(--text-sm);
+  color: var(--color-ink);
+  line-height: 1.5;
+}
+
+.verification-status span {
+  flex: 1 1 14rem;
 }
 
 .proposal-verification > p {

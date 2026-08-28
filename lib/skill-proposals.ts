@@ -15,7 +15,7 @@ export const skillProposalSchema = z.object({
 export type SkillProposal = z.infer<typeof skillProposalSchema>;
 
 export class ProposalError extends Error {
-  constructor(message: string, public status = 400) {
+  constructor(message: string, public status = 400, public code = "PROPOSAL_REJECTED") {
     super(message);
     this.name = "ProposalError";
   }
@@ -94,21 +94,53 @@ type TurnstileResponse = {
 };
 
 export async function validateTurnstile(token: string, remoteip?: string) {
-  const secret = process.env.TURNSTILE_SECRET_KEY;
+  const secret = process.env.TURNSTILE_SECRET_KEY?.trim();
   if (!secret) {
-    if (process.env.NODE_ENV === "production") throw new ProposalError("O envio protegido ainda não foi configurado pela administradora.", 503);
+    if (process.env.NODE_ENV === "production") throw new ProposalError("A chave secreta do Turnstile não foi configurada. A administradora precisa revisar TURNSTILE_SECRET_KEY na Vercel.", 503, "TURNSTILE_SECRET_MISSING");
     return;
   }
+  if (!token.trim()) throw new ProposalError("Conclua a verificação antes de enviar.", 403, "TURNSTILE_TOKEN_MISSING");
 
-  const body = new FormData();
-  body.set("secret", secret);
-  body.set("response", token);
-  if (remoteip) body.set("remoteip", remoteip);
-  const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body, cache: "no-store" });
-  const result = (await response.json()) as TurnstileResponse;
-  const expectedHostname = process.env.TURNSTILE_EXPECTED_HOSTNAME;
-  if (!response.ok || !result.success || result.action !== "skill_proposal" || (expectedHostname && result.hostname !== expectedHostname)) {
-    throw new ProposalError("A verificação anti-spam expirou ou não foi aceita. Atualize o desafio e tente novamente.", 403);
+  const body = new URLSearchParams({ secret, response: token.trim() });
+  if (remoteip && isIP(remoteip)) body.set("remoteip", remoteip);
+  let result: TurnstileResponse;
+  try {
+    const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST", body, cache: "no-store", signal: AbortSignal.timeout(10_000),
+    });
+    if (!response.ok) throw new Error("Siteverify indisponível");
+    result = (await response.json()) as TurnstileResponse;
+    if (!result || typeof result.success !== "boolean") throw new Error("Resposta inválida");
+  } catch {
+    throw new ProposalError("A Cloudflare não respondeu à validação. Tente novamente; seus dados foram preservados.", 503, "TURNSTILE_UNAVAILABLE");
+  }
+  if (!result.success) {
+    const codes = Array.isArray(result["error-codes"]) ? result["error-codes"] : [];
+    if (codes.includes("missing-input-secret") || codes.includes("invalid-input-secret")) {
+      throw new ProposalError("A chave secreta do Turnstile foi recusada. Confira se a Site Key e a Secret Key pertencem ao mesmo widget na Cloudflare.", 503, "TURNSTILE_SECRET_INVALID");
+    }
+    if (codes.includes("timeout-or-duplicate")) {
+      throw new ProposalError("O token expirou ou já foi utilizado. A verificação será renovada; tente enviar novamente. Seu formulário foi preservado.", 403, "TURNSTILE_TOKEN_EXPIRED");
+    }
+    if (codes.includes("internal-error")) {
+      throw new ProposalError("A Cloudflare está temporariamente indisponível. Tente novamente em instantes.", 503, "TURNSTILE_UNAVAILABLE");
+    }
+    throw new ProposalError("A Cloudflare recusou o token. Tente a nova verificação; se persistir, a administradora deve conferir o par de chaves do widget.", 403, "TURNSTILE_TOKEN_INVALID");
+  }
+  if (result.action !== "skill_proposal") {
+    throw new ProposalError("A verificação não corresponde a este formulário. Atualize a página; se persistir, a administradora deve revisar a configuração do widget.", 403, "TURNSTILE_ACTION_MISMATCH");
+  }
+  const configuredHostname = process.env.TURNSTILE_EXPECTED_HOSTNAME?.trim() || process.env.APP_ORIGIN?.trim();
+  if (configuredHostname) {
+    let expectedHostname: string;
+    try {
+      expectedHostname = new URL(configuredHostname.includes("://") ? configuredHostname : `https://${configuredHostname}`).hostname.toLowerCase();
+    } catch {
+      throw new ProposalError("TURNSTILE_EXPECTED_HOSTNAME está inválido. A administradora precisa configurar o domínio do site.", 503, "TURNSTILE_HOSTNAME_CONFIG_INVALID");
+    }
+    if (result.hostname?.toLowerCase() !== expectedHostname) {
+      throw new ProposalError("O domínio da verificação difere do domínio configurado. A administradora deve alinhar o hostname da Cloudflare e TURNSTILE_EXPECTED_HOSTNAME na Vercel.", 403, "TURNSTILE_HOSTNAME_MISMATCH");
+    }
   }
 }
 

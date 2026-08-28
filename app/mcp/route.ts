@@ -9,7 +9,7 @@ import {
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
-const RESOURCE_URI = "ui://orquestrador-de-sites/seletor.html?v=2";
+const RESOURCE_URI = "ui://orquestrador-de-sites/seletor.html?v=3";
 
 async function fetchPageHtml() {
   const response = await fetch(baseURL);
@@ -89,7 +89,7 @@ const handler = createMcpHandler(async (server) => {
         };
       } catch (error) {
         const message = error instanceof ProposalError ? error.message : "Não foi possível enviar a skill para aprovação.";
-        return { isError: true, content: [{ type: "text" as const, text: message }], structuredContent: { success: false, message } };
+        return { isError: true, content: [{ type: "text" as const, text: message }], structuredContent: { success: false, message, code: error instanceof ProposalError ? error.code : "PROPOSAL_FAILED" } };
       }
     },
   );

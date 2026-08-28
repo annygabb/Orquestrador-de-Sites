@@ -2,8 +2,9 @@
 
 import { catalog, type CatalogKind } from "@/lib/catalog";
 import Script from "next/script";
-import { type FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useMemo, useRef, useState } from "react";
 import { useMcpApp } from "./hooks/use-mcp-app";
+import { useTurnstile } from "./hooks/use-turnstile";
 
 type Tab = "all" | CatalogKind;
 type Stage = "select" | "destination" | "done";
@@ -28,6 +29,8 @@ export default function Home() {
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle");
   const [deliveryMode, setDeliveryMode] = useState<DeliveryMode>("chat");
   const [preparedPrompt, setPreparedPrompt] = useState("");
+  const proposalInFlight = useRef(false);
+  const verification = useTurnstile(turnstileSiteKey, showSkillForm && stage === "select");
 
   const allItems = catalog;
   const selectedItems = useMemo(() => allItems.filter((item) => selected.has(item.id)), [allItems, selected]);
@@ -52,24 +55,26 @@ export default function Home() {
 
   async function addCustomSkill(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (proposalInFlight.current) return;
     const formElement = event.currentTarget;
     const name = draft.name.trim();
     const description = draft.description.trim();
     const directive = draft.directive.trim();
     const source = draft.source.trim();
     const formData = new FormData(formElement);
-    const turnstileToken = String(formData.get("cf-turnstile-response") ?? "");
     const website = String(formData.get("website") ?? "");
     if (!name || !description || !directive || !source) return;
-    if (!turnstileToken) {
+    if (!turnstileSiteKey) {
       setProposalStatus("error");
-      setProposalMessage(turnstileSiteKey ? "Conclua a verificação anti-spam antes de enviar." : "O envio protegido ainda precisa ser configurado pela administradora.");
+      setProposalMessage("O envio protegido ainda precisa ser configurado pela administradora.");
       return;
     }
+    proposalInFlight.current = true;
     setProposalStatus("submitting");
     setProposalMessage("");
     setProposalUrl("");
     try {
+      const turnstileToken = await verification.getFreshToken();
       const payload = { name, description, directive, source, turnstileToken, website };
       let data: { success?: boolean; message?: string; pullRequestUrl?: string };
       if (app) {
@@ -89,11 +94,14 @@ export default function Home() {
       setProposalMessage("Skill enviada para aprovação");
       setProposalUrl(data.pullRequestUrl ?? "");
       setDraft(emptyDraft);
-      const widget = formElement.querySelector<HTMLElement>(".cf-turnstile");
-      if (widget && "turnstile" in window) (window as Window & { turnstile?: { reset: (element?: HTMLElement) => void } }).turnstile?.reset(widget);
     } catch (error) {
       setProposalStatus("error");
       setProposalMessage(error instanceof Error ? error.message : "Não foi possível enviar a skill para aprovação.");
+    } finally {
+      // Siteverify consumes a token even when a later operation fails.
+      // Never resend a token or automatically retry a potentially-created PR.
+      verification.reset();
+      proposalInFlight.current = false;
     }
   }
 
@@ -186,7 +194,7 @@ export default function Home() {
           <div className="catalog-actions">
             <span><strong>{visible.length}</strong> opções encontradas</span>
             <div>
-              <button className="button-secondary" onClick={() => setShowSkillForm((current) => !current)} aria-expanded={showSkillForm}>{showSkillForm ? "Fechar formulário" : "Adicionar skill"}</button>
+              <button className="button-secondary" disabled={proposalStatus === "submitting"} onClick={() => setShowSkillForm((current) => !current)} aria-expanded={showSkillForm}>{showSkillForm ? "Fechar formulário" : "Adicionar skill"}</button>
               <button className="button-quiet" onClick={() => setSelected(new Set(visible.map((item) => item.id)))}>Selecionar visíveis</button>
               <button className="button-quiet" onClick={() => setSelected(new Set())} disabled={selected.size === 0}>Limpar</button>
             </div>
@@ -202,11 +210,18 @@ export default function Home() {
                 <label className="wide"><span>Repositório da fonte *</span><input type="url" required maxLength={500} value={draft.source} onChange={(event) => setDraft({ ...draft, source: event.target.value })} placeholder="https://github.com/autor/skill" /></label>
                 <label className="proposal-honeypot" aria-hidden="true"><span>Não preencha</span><input name="website" tabIndex={-1} autoComplete="off" /></label>
                 <div className="wide proposal-verification">
-                  {turnstileSiteKey ? <><Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" strategy="afterInteractive" /><div className="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="light" data-action="skill_proposal" /></> : <p>A proteção anti-spam precisa ser configurada antes de aceitar propostas.</p>}
+                  {turnstileSiteKey ? <>
+                    <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" strategy="afterInteractive" onReady={verification.onScriptReady} onError={verification.onScriptError} />
+                    <div ref={verification.containerRef} hidden={verification.phase === "recheck"} />
+                    <div className="verification-status" role="status" aria-live="polite">
+                      <span>{verification.message}</span>
+                      {(verification.phase === "recheck" || verification.phase === "error") && <button type="button" className="button-secondary" disabled={proposalStatus === "submitting"} onClick={() => verification.reset(verification.phase === "recheck")}>Verificar novamente</button>}
+                    </div>
+                  </> : <p>A proteção anti-spam precisa ser configurada antes de aceitar propostas.</p>}
                 </div>
                 {proposalStatus === "success" && <div className="proposal-feedback proposal-success wide" role="status"><strong>Skill enviada para aprovação</strong><span>Ela entrará no catálogo global somente após a revisão e o merge por Anny.</span>{proposalUrl && <a href={proposalUrl} target="_blank" rel="noopener noreferrer">Acompanhar Pull Request</a>}</div>}
                 {proposalStatus === "error" && <div className="proposal-feedback proposal-error wide" role="alert"><strong>Proposta não enviada</strong><span>{proposalMessage}</span></div>}
-                <div className="builder-actions wide"><button type="button" className="button-quiet" onClick={() => { setShowSkillForm(false); setDraft(emptyDraft); setProposalStatus("idle"); }}>Cancelar</button><button type="submit" className="button-primary" disabled={proposalStatus === "submitting" || !turnstileSiteKey}>{proposalStatus === "submitting" ? "Enviando para aprovação…" : "Enviar para aprovação"}</button></div>
+                <div className="builder-actions wide"><button type="button" className="button-quiet" disabled={proposalStatus === "submitting"} onClick={() => { setShowSkillForm(false); setDraft(emptyDraft); setProposalStatus("idle"); }}>Cancelar</button><button type="submit" className="button-primary" disabled={proposalStatus === "submitting" || !turnstileSiteKey || verification.phase === "loading" || verification.phase === "recheck" || verification.phase === "error"}>{proposalStatus === "submitting" ? "Verificando e enviando…" : "Enviar para aprovação"}</button></div>
               </form>
             </section>
           )}
