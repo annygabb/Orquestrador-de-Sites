@@ -9,7 +9,7 @@ import {
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
-const RESOURCE_URI = "ui://orquestrador-de-sites/seletor.html?v=3";
+const RESOURCE_URI = "ui://orquestrador-de-sites/seletor.html?v=4";
 
 async function fetchPageHtml() {
   const response = await fetch(baseURL);

@@ -5,6 +5,7 @@ import Script from "next/script";
 import { type FormEvent, useMemo, useRef, useState } from "react";
 import { useMcpApp } from "./hooks/use-mcp-app";
 import { useTurnstile } from "./hooks/use-turnstile";
+import { AutoGrowTextarea } from "./components/auto-grow-textarea";
 
 type Tab = "all" | CatalogKind;
 type Stage = "select" | "destination" | "done";
@@ -204,9 +205,9 @@ export default function Home() {
             <section className="skill-builder" aria-labelledby="skill-builder-title">
               <div className="skill-builder-copy"><h2 id="skill-builder-title">Propor uma nova skill</h2><p>O sistema criará um Pull Request no GitHub. Ela só aparecerá para todos depois da revisão e aprovação de Anny.</p></div>
               <form onSubmit={addCustomSkill} className="skill-builder-form">
-                <label><span>Nome *</span><input required minLength={3} maxLength={80} value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} placeholder="Ex.: Revisão para clínicas" /></label>
-                <label><span>Descrição curta *</span><input required minLength={20} maxLength={240} value={draft.description} onChange={(event) => setDraft({ ...draft, description: event.target.value })} placeholder="Quando essa skill deve ser usada?" /></label>
-                <label className="wide"><span>Instruções</span><textarea required minLength={40} maxLength={3000} rows={5} value={draft.directive} onChange={(event) => setDraft({ ...draft, directive: event.target.value })} placeholder="Descreva o objetivo, o fluxo e os limites reais da skill." /></label>
+                <label><span>Nome *</span><AutoGrowTextarea required minLength={3} maxLength={80} value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} placeholder="Ex.: Revisão para clínicas" /></label>
+                <label><span>Descrição curta *</span><AutoGrowTextarea required minLength={20} maxLength={240} value={draft.description} onChange={(event) => setDraft({ ...draft, description: event.target.value })} placeholder="Quando essa skill deve ser usada?" /></label>
+                <label className="wide"><span>Instruções</span><AutoGrowTextarea required minLength={40} maxLength={3000} rows={5} value={draft.directive} onChange={(event) => setDraft({ ...draft, directive: event.target.value })} placeholder="Descreva o objetivo, o fluxo e os limites reais da skill." /></label>
                 <label className="wide"><span>Repositório da fonte *</span><input type="url" required maxLength={500} value={draft.source} onChange={(event) => setDraft({ ...draft, source: event.target.value })} placeholder="https://github.com/autor/skill" /></label>
                 <label className="proposal-honeypot" aria-hidden="true"><span>Não preencha</span><input name="website" tabIndex={-1} autoComplete="off" /></label>
                 <div className="wide proposal-verification">

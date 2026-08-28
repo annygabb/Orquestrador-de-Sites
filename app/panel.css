@@ -379,8 +379,16 @@ body {
   font-weight: 680;
 }
 
-.skill-builder-form textarea {
-  resize: vertical;
+.skill-builder-form .auto-grow-textarea {
+  display: block;
+  min-width: 0;
+  min-height: 2.75rem;
+  max-height: none;
+  overflow: hidden;
+  resize: none;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .skill-builder-form small {
