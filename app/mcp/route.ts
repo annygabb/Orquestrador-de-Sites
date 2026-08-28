@@ -1,5 +1,6 @@
 import { baseURL } from "@/baseUrl";
 import { catalog, itemById } from "@/lib/catalog";
+import { buildSelectionPrompt, externalResourceNotice } from "@/lib/selection-prompt";
 import { ProposalError, skillProposalSchema, submitSkillProposal, validateTurnstile } from "@/lib/skill-proposals";
 import {
   registerAppResource,
@@ -9,7 +10,7 @@ import {
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
-const RESOURCE_URI = "ui://orquestrador-de-sites/seletor.html?v=4";
+const RESOURCE_URI = "ui://orquestrador-de-sites/seletor.html?v=5";
 
 async function fetchPageHtml() {
   const response = await fetch(baseURL);
@@ -54,11 +55,12 @@ const handler = createMcpHandler(async (server) => {
       _meta: { ui: { resourceUri: RESOURCE_URI } },
     },
     async () => ({
-      content: [{ type: "text" as const, text: "Use a interface para selecionar quantas opções quiser e confirme somente quando terminar." }],
+      content: [{ type: "text" as const, text: `Use a interface para selecionar quantas opções quiser e confirme somente quando terminar. ${externalResourceNotice}` }],
       structuredContent: {
         catalog,
         total: catalog.length,
         instructions: "A seleção ainda não foi confirmada.",
+        personalizationNotice: externalResourceNotice,
       },
     }),
   );
@@ -133,12 +135,12 @@ const handler = createMcpHandler(async (server) => {
       }
       const activeSkills = selectedItems.filter((item) => item.kind === "skill");
       const personalizations = selectedItems.filter((item) => item.kind === "personalization");
-      const message = `Seleção confirmada. Aplique a partir de agora estas opções neste projeto: ${selectedItems.map((item) => item.name).join(", ")}. Considere as instruções devolvidas pelo orquestrador e só altere a seleção após uma nova confirmação.`;
-      const prompt = `Aplique as skills e personalizações confirmadas abaixo ao projeto desta conversa.\n\nDestino informado pela usuária: ${destinationLink}\n\nSKILLS CONFIRMADAS\n${selectedItems.map((item, index) => `${index + 1}. ${item.name}\n${item.directive}${item.source ? `\nFonte: ${item.source}` : ""}`).join("\n\n")}\n\nAntes de alterar qualquer projeto, analise o contexto e preserve o escopo, os requisitos e as autorizações já definidos por Anny Gabrielly. Se o link apontar para uma conversa diferente, use-o somente como referência: faça as mudanças na conversa atual ou peça os arquivos/link público necessários.`;
+      const message = `Seleção confirmada: ${activeSkills.length} skills e ${personalizations.length} recursos externos. Só altere a seleção após uma nova confirmação.${personalizations.length ? ` ${externalResourceNotice}` : ""}`;
+      const prompt = buildSelectionPrompt(selectedItems, destinationLink);
       return {
         content: [
           { type: "text" as const, text: message },
-          { type: "text" as const, text: selectedItems.map((item, index) => `${index + 1}. ${item.name}: ${item.directive}`).join("\n") },
+          { type: "text" as const, text: prompt },
         ],
         structuredContent: {
           confirmed: true,
@@ -147,7 +149,7 @@ const handler = createMcpHandler(async (server) => {
           destinationLink,
           selectedIds: selectedItems.map((item) => item.id),
           activeSkills: activeSkills.map(({ id, name, directive, source }) => ({ id, name, directive, source })),
-          personalizations: personalizations.map(({ id, name, directive, source }) => ({ id, name, directive, source })),
+          personalizations: personalizations.map(({ id, name, description, source }) => ({ id, name, description, source, kind: "personalization", isSkill: false, purpose: "Referência externa para facilitar buscas e consultas" })),
         },
       };
     },

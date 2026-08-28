@@ -6,6 +6,7 @@ on:
       - "data/skills.json"
       - "skills/**"
       - "lib/catalog.ts"
+      - "lib/selection-prompt.ts"
       - "lib/skill-proposals.ts"
       - "lib/turnstile-clock.ts"
       - "tests/**"
@@ -40,6 +41,9 @@ jobs:
 
       - name: Testar validação e renovação do Turnstile
         run: npm run test:turnstile
+
+      - name: Testar separação entre skills e referências externas
+        run: npm run test:selection
 
       - name: Gerar build de produção
         run: npm run build

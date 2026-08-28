@@ -1,6 +1,7 @@
 "use client";
 
 import { catalog, type CatalogKind } from "@/lib/catalog";
+import { buildSelectionPrompt, externalResourceNotice } from "@/lib/selection-prompt";
 import Script from "next/script";
 import { type FormEvent, useMemo, useRef, useState } from "react";
 import { useMcpApp } from "./hooks/use-mcp-app";
@@ -35,6 +36,7 @@ export default function Home() {
 
   const allItems = catalog;
   const selectedItems = useMemo(() => allItems.filter((item) => selected.has(item.id)), [allItems, selected]);
+  const selectedReferences = selectedItems.filter((item) => item.kind === "personalization");
 
   const visible = useMemo(() => {
     const term = query.trim().toLocaleLowerCase("pt-BR");
@@ -107,8 +109,7 @@ export default function Home() {
   }
 
   function buildPrompt(link: string) {
-    const directives = selectedItems.map((item, index) => `${index + 1}. ${item.name}\n${item.directive}${item.source ? `\nFonte: ${item.source}` : ""}`).join("\n\n");
-    return `Aplique as skills e personalizações confirmadas abaixo ao projeto desta conversa.\n\nDestino informado pela usuária: ${link}\n\nSKILLS CONFIRMADAS\n${directives}\n\nAntes de alterar qualquer projeto, analise o contexto e preserve o escopo, os requisitos e as autorizações já definidos por Anny Gabrielly. Se o link apontar para uma conversa diferente, use-o somente como referência: faça as mudanças na conversa atual ou peça os arquivos/link público necessários.`;
+    return buildSelectionPrompt(selectedItems, link);
   }
 
   async function deliver(event: FormEvent<HTMLFormElement>) {
@@ -192,6 +193,8 @@ export default function Home() {
             <label className="search-field"><span className="sr-only">Pesquisar opções</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Pesquisar skill ou categoria" /></label>
           </section>
 
+          {tab === "personalization" && <p className="external-resource-note">{externalResourceNotice}</p>}
+
           <div className="catalog-actions">
             <span><strong>{visible.length}</strong> opções encontradas</span>
             <div>
@@ -199,6 +202,10 @@ export default function Home() {
               <button className="button-quiet" onClick={() => setSelected(new Set(visible.map((item) => item.id)))}>Selecionar visíveis</button>
               <button className="button-quiet" onClick={() => setSelected(new Set())} disabled={selected.size === 0}>Limpar</button>
             </div>
+          </div>
+
+          <div role="status" aria-live="polite" aria-atomic="true">
+            {selectedReferences.length > 0 && <p className="external-resource-note"><strong>{selectedReferences.length} {selectedReferences.length === 1 ? "recurso externo selecionado" : "recursos externos selecionados"}:</strong> {selectedReferences.map((item) => item.name).join(", ")}. São referências para facilitar buscas, não skills.</p>}
           </div>
 
           {showSkillForm && (
@@ -233,11 +240,11 @@ export default function Home() {
               return (
                 <article className={`skill-card ${checked ? "is-selected" : ""}`} key={item.id}>
                   <label>
-                    <input type="checkbox" checked={checked} onChange={() => toggle(item.id)} />
+                    <input type="checkbox" checked={checked} onChange={() => toggle(item.id)} aria-label={item.name} aria-describedby={item.kind === "personalization" ? `external-${item.id}` : undefined} />
                     <span className="selection-box" aria-hidden="true">{checked ? "✓" : ""}</span>
-                    <span className="skill-content"><span className="skill-meta"><span>{item.group}</span>{item.badge && <em>{item.badge}</em>}</span><strong>{item.name}</strong><span>{item.description}</span></span>
+                    <span className="skill-content"><span className="skill-meta"><span>{item.group}</span>{item.kind === "personalization" ? <em>Recurso externo</em> : item.badge && <em>{item.badge}</em>}</span><strong>{item.name}</strong><span className="skill-description">{item.description}</span>{item.kind === "personalization" && <small className="external-resource-caption" id={`external-${item.id}`}>Não é uma skill. Adicionado aqui para facilitar buscas e consultas.</small>}</span>
                   </label>
-                  <div className="card-links">{item.source && <a href={item.source} target="_blank" rel="noopener noreferrer">Ver fonte</a>}</div>
+                  <div className="card-links">{item.source && <a href={item.source} target="_blank" rel="noopener noreferrer">{item.kind === "personalization" ? "Abrir recurso externo" : "Ver fonte"}</a>}</div>
                 </article>
               );
             })}
@@ -250,7 +257,7 @@ export default function Home() {
           <div className="destination-main">
             <button className="back-button" onClick={() => setStage("select")}>← Voltar à seleção</button>
             <p className="stage-label">Etapa 2 de 3</p>
-            <h1>Onde essas skills devem ser aplicadas?</h1>
+            <h1>Qual projeto vai receber esta seleção?</h1>
             <p>Informe o link do chat em que o projeto foi criado ou o endereço público do site que será revisado.</p>
             <form className="destination-form" onSubmit={deliver}>
               <label><span>Link do chat ou projeto</span><input type="url" required autoFocus value={destinationLink} onChange={(event) => setDestinationLink(event.target.value)} placeholder="https://chatgpt.com/c/... ou https://seusite.com" /></label>
@@ -259,14 +266,14 @@ export default function Home() {
               <button className="button-primary destination-submit" disabled={!destinationLink.trim() || status === "saving"}>{status === "saving" ? "Preparando envio…" : connected ? "Enviar para este chat" : "Copiar e abrir o ChatGPT"}</button>
             </form>
           </div>
-          <aside className="selection-review" aria-label="Resumo da seleção"><span>Seleção confirmada</span><strong>{selectedItems.length} {selectedItems.length === 1 ? "opção" : "opções"}</strong><ul>{selectedItems.map((item) => <li key={item.id}>{item.name}</li>)}</ul></aside>
+          <aside className="selection-review" aria-label="Resumo da seleção"><span>Seleção confirmada</span><strong>{selectedItems.length} {selectedItems.length === 1 ? "opção" : "opções"}</strong><ul>{selectedItems.map((item) => <li key={item.id}>{item.name}{item.kind === "personalization" && <small className="external-resource-caption">Recurso externo — não é uma skill</small>}</li>)}</ul>{selectedReferences.length > 0 && <p className="external-resource-note">{externalResourceNotice}</p>}</aside>
         </section>
       )}
 
       {stage === "done" && (
         <section className="done-screen">
           <span className="done-mark" aria-hidden="true">✓</span><p className="stage-label">Etapa 3 de 3</p>
-          <h1>{deliveryMode === "chat" ? "Skills enviadas ao chat atual." : "Abrindo o ChatGPT."}</h1>
+          <h1>{deliveryMode === "chat" ? "Seleção enviada ao chat atual." : "Abrindo o ChatGPT."}</h1>
           <p>{deliveryMode === "chat" ? "O ChatGPT recebeu a seleção, o link de referência e as instruções completas para trabalhar no projeto." : "As instruções já foram copiadas. Quando o ChatGPT abrir, cole o texto no chat do projeto."}</p>
           <div className="done-actions">{deliveryMode === "clipboard" && <a className="button-primary" href="https://chatgpt.com/">Abrir agora</a>}<button className="button-secondary" onClick={resetFlow}>Voltar ao painel</button></div>
         </section>
