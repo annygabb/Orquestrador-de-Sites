@@ -322,6 +322,15 @@
     "description": "Transforma referências de imagem em experiências Three.js.",
     "directive": "Considere img2threejs para uma cena 3D derivada de referência. Planeje fallback, carregamento, controles, acessibilidade e orçamento de GPU.",
     "source": "https://github.com/img2threejs/img2threejs"
+  },
+  {
+    "id": "vercel-react-best-practices",
+    "name": "Vercel React Best Practices",
+    "description": "Revisão de desempenho e boas práticas para projetos desenvolvidos com React e Next.js.",
+    "directive": "Revise o projeto React ou Next.js para identificar renderizações desnecessárias, carregamentos sequenciais e JavaScript excessivo. Priorize os problemas por impacto, explique as melhorias propostas e preserve o visual e as funcionalidades existentes. Não altere credenciais nem publique mudanças sem autorização.",
+    "source": "https://github.com/vercel-labs/agent-skills",
+    "kind": "skill",
+    "group": "Comunidade",
+    "badge": "Comunidade"
   }
 ]
-
