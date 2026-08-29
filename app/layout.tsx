@@ -7,10 +7,14 @@ import { baseURL } from "@/baseUrl";
 import "./globals.css";
 import "../tokens.css";
 import "./panel.css";
+import "./marketing.css";
 
 export const metadata: Metadata = {
-  title: "Orquestrador de Sites",
-  description: "Selecione e confirme as skills usadas no seu projeto.",
+  metadataBase: new URL(process.env.APP_ORIGIN || "https://orquestradordesites.vercel.app"),
+  title: { default: "Orquestrador de Sites", template: "%s · Orquestrador de Sites" },
+  description: "Escolha skills e referências, confirme o processo e aplique ao seu projeto de site com IA.",
+  openGraph: { title: "Orquestrador de Sites", description: "Um processo claro para escolher e aplicar skills em projetos de sites com IA.", type: "website", locale: "pt_BR" },
+  twitter: { card: "summary", title: "Orquestrador de Sites", description: "Skills e referências organizadas para o seu próximo site." },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -18,6 +22,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <base href={baseURL} />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <script dangerouslySetInnerHTML={{ __html: `try{document.documentElement.dataset.theme=localStorage.getItem('os-theme')||((matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light')}catch(e){}` }} />
       </head>
       <body>{children}</body>
     </html>

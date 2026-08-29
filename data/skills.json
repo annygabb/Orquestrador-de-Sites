@@ -27,6 +27,16 @@
     "directive": "Use frontend-design para definir uma direção estética intencional, tipografia expressiva e composição que não pareça um template padrão."
   },
   {
+    "id": "revenue-centric-design",
+    "name": "Revenue-Centric Design",
+    "kind": "skill",
+    "group": "Produto e Conversão",
+    "description": "Orienta aquisição, ativação, preço e retenção sem separar valor para o usuário de resultado para o negócio.",
+    "directive": "Aplique Revenue-Centric Design: identifique ICP e nível de consciência, apresente valor antes do pedido, reduza tempo até a primeira ação útil, torne preço e cancelamento claros e meça ativação e retenção. Não use em apostas, cassinos ou jogos de azar com dinheiro real.",
+    "source": "https://github.com/heliocosta-dev/revenue-centric-design",
+    "badge": "Conversão"
+  },
+  {
     "id": "taste-skill",
     "name": "Taste Skill",
     "kind": "skill",

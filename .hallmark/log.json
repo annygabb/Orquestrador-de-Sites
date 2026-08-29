@@ -1,5 +1,14 @@
 [
   {
+    "date": "2026-08-29",
+    "macrostructure": "Split Studio",
+    "theme": "custom",
+    "theme_axes": "light-dark / geometric-sans / cobalt-accent",
+    "enrichment": "product-interface proof",
+    "brief": "Home SaaS direta para criadores de sites com IA, login e assinatura",
+    "scope": "marketing-auth-billing"
+  },
+  {
     "date": "2026-08-27",
     "macrostructure": "Workbench",
     "theme": "custom",

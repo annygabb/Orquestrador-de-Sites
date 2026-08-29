@@ -1,6 +1,7 @@
 import { ProposalError, skillProposalSchema, submitSkillProposal, validateTurnstile } from "@/lib/skill-proposals";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { currentEntitlement } from "@/lib/entitlements";
 
 export const runtime = "nodejs";
 
@@ -35,6 +36,8 @@ function validateOrigin(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const entitlement = await currentEntitlement();
+    if (!entitlement.allowed) throw new ProposalError("Ative a assinatura antes de enviar uma proposta.", 402, "SUBSCRIPTION_REQUIRED");
     validateOrigin(request);
     if (!request.headers.get("content-type")?.includes("application/json")) throw new ProposalError("Envie a proposta no formato JSON.", 415);
     const contentLength = Number(request.headers.get("content-length") ?? 0);

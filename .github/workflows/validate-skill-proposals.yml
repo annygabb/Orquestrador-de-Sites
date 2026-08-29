@@ -45,5 +45,8 @@ jobs:
       - name: Testar separação entre skills e referências externas
         run: npm run test:selection
 
+      - name: Testar cobrança e política de acesso
+        run: npm run test:billing
+
       - name: Gerar build de produção
         run: npm run build

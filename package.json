@@ -9,7 +9,9 @@
     "typecheck": "tsc --noEmit",
     "validate:skills": "node scripts/validate-skills.mjs",
     "test:turnstile": "node --experimental-transform-types --test tests/turnstile.test.mjs",
-    "test:selection": "node --experimental-transform-types --test tests/selection-prompt.test.mjs"
+    "test:selection": "node --experimental-transform-types --test tests/selection-prompt.test.mjs tests/catalog-resources.test.mjs tests/panel-layout.test.mjs",
+    "test:billing": "node --experimental-transform-types --test tests/billing.test.mjs",
+    "test": "npm run test:turnstile && npm run test:selection && npm run test:billing"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.3.0",
@@ -17,6 +19,8 @@
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "@modelcontextprotocol/ext-apps": "1.1.2",
     "@modelcontextprotocol/sdk": "1.25.2",
+    "@supabase/ssr": "^0.12.5",
+    "@supabase/supabase-js": "^2.112.4",
     "mcp-handler": "1.0.7",
     "next": "16.1.6",
     "react": "19.2.3",

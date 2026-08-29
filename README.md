@@ -1,115 +1,120 @@
 # Orquestrador de Sites
 
-MCP App com uma interface completa de seleção: checkboxes, busca, filtros, contador e botão **Confirmar seleção**. A confirmação devolve ao ChatGPT as instruções das skills e personalizações escolhidas, que passam a valer no projeto a partir daquele momento.
+SaaS de Anny Gabrielly para escolher, combinar e aplicar skills e referências em projetos de sites com IA. O produto reúne uma home comercial, login Google, cobrança recorrente, painel responsivo, perfil de assinatura, proposta de novas skills por Pull Request e servidor MCP com acesso pago.
 
-## O que está incluído
+## Modelo comercial do MVP
 
-- endpoint Streamable HTTP em `/mcp`;
-- interface incorporada ao ChatGPT por MCP Apps;
-- catálogo central versionado em `data/skills.json`;
-- formulário público para propor novas skills por Pull Request;
-- criação automática de `skills/<nome>/SKILL.md` em branch separada;
-- proteção por Turnstile, origem, limite de envios, validação de links, duplicatas e instruções perigosas;
-- fluxo em três etapas: selecionar, informar destino e enviar;
-- ferramentas `open_skill_selector` e `confirm_skill_selection`;
-- catálogo de design, UX, revisão de código, segurança, SEO, animação, otimização de tokens, componentes e referências;
-- implantação pronta para Vercel;
-- skill de orquestração para empacotamento como plugin Codex.
+- primeira cobrança: **R$ 59,90**, com 30 dias de acesso;
+- depois: **R$ 29,90 por mês**;
+- cancelamento interrompe as próximas cobranças e preserva o período já pago;
+- atraso após o fim do período pago, reembolso ou chargeback bloqueiam painel, APIs pagas e MCP;
+- o MVP não emite nota fiscal automaticamente e não guarda cartão nem CPF no banco local. O CPF é enviado diretamente ao Asaas para criar o cliente.
 
-## Publicar na Vercel
+Os valores são definidos no servidor em centavos. O navegador nunca escolhe preço, usuário ou estado da assinatura.
 
-1. Entre em [vercel.com/new](https://vercel.com/new) usando sua conta GitHub.
-2. Importe o repositório `annygabb/Orquestrador-de-Sites`.
-3. Mantenha o framework detectado como **Next.js** e faça o primeiro deploy.
-4. Ao terminar, copie a URL de produção, por exemplo `https://orquestrador-de-sites.vercel.app`.
-5. O endereço MCP será essa URL acrescida de `/mcp`.
+## O que foi implementado
 
-## Configurar propostas globais de skills
+- home direta, modo claro/escuro e layout responsivo;
+- login Google com Supabase Auth;
+- PostgreSQL/Supabase com migração, índices e Row Level Security;
+- checkout hospedado do Asaas, webhook autenticado e idempotente;
+- ativação de 30 dias e criação da recorrência mensal após o primeiro pagamento confirmado;
+- perfil com situação, valor, vencimento, cancelamento e chave pessoal do MCP;
+- seis eventos de e-mail: cadastro, ativação paga, lembrete D-3, pagamento confirmado, acesso suspenso e cancelamento;
+- seletor de 44 skills/recursos, incluindo Revenue-Centric Design;
+- proposta de skill via GitHub App, protegida por assinatura e Cloudflare Turnstile;
+- bloqueio do painel, das propostas e das operações MCP sem período pago;
+- testes unitários de seleção, Turnstile, cobrança e autorização temporal.
 
-O painel funciona sem credenciais para selecionar as skills existentes. Para permitir que usuários enviem novas propostas ao GitHub, configure os dois serviços abaixo.
+## Arquitetura
 
-### 1. GitHub App
+| Área | Serviço | Papel |
+| --- | --- | --- |
+| Frontend e backend | Next.js 16 na Vercel | Home, painel, APIs, cron e MCP |
+| Identidade e dados | Supabase | Google OAuth, PostgreSQL e RLS |
+| Pagamentos | Asaas | Cobrança hospedada, recorrência e webhooks |
+| E-mails | Resend | Mensagens transacionais |
+| Antispam | Cloudflare Turnstile | Proteção de propostas |
+| Aprovação | GitHub App | Branch e Pull Request por proposta |
 
-Crie uma GitHub App e conceda somente estas permissões de repositório:
+## Configuração
 
-- **Contents: Read and write**;
-- **Pull requests: Read and write**;
-- **Metadata: Read-only**.
+Copie `.env.example` para seu ambiente local e registre os mesmos nomes na Vercel. Nunca envie chaves privadas ao GitHub.
 
-Instale a App apenas em `annygabb/Orquestrador-de-Sites`, gere uma chave privada e registre na Vercel:
+### 1. Supabase e Google
 
-```text
-GITHUB_APP_ID
-GITHUB_APP_INSTALLATION_ID
-GITHUB_APP_PRIVATE_KEY
-GITHUB_REPOSITORY=annygabb/Orquestrador-de-Sites
-GITHUB_BASE_BRANCH=main
-```
+1. Crie um projeto no Supabase.
+2. Execute `supabase/migrations/202608290001_saas_mvp.sql` no SQL Editor.
+3. Em Authentication, habilite Google e configure o Client ID e Client Secret do Google Cloud.
+4. No Google Cloud, autorize o callback exibido pelo Supabase, normalmente `https://SEU-PROJETO.supabase.co/auth/v1/callback`.
+5. No Supabase, registre a URL de produção e os previews permitidos.
+6. Defina `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` e `SUPABASE_SERVICE_ROLE_KEY`.
+7. Depois do primeiro login da administradora, marque manualmente `profiles.is_admin = true` apenas nessa conta.
 
-### 2. Cloudflare Turnstile
+O painel público não recebe a service role. As políticas RLS limitam cada usuário às próprias linhas.
 
-Crie um widget Turnstile para `orquestrador-de-sites.vercel.app` e adicione:
+### 2. Asaas
+
+Comece no sandbox. Defina `ASAAS_API_URL=https://api-sandbox.asaas.com/v3`, `ASAAS_API_KEY` e um `ASAAS_WEBHOOK_TOKEN` aleatório e exclusivo.
+
+Cadastre o webhook `https://SEU-DOMINIO/api/webhooks/asaas`, usando o mesmo token, para pelo menos:
+
+- `PAYMENT_CONFIRMED`;
+- `PAYMENT_RECEIVED`;
+- `PAYMENT_OVERDUE`;
+- `PAYMENT_REFUNDED`;
+- `PAYMENT_CHARGEBACK_REQUESTED`;
+- `PAYMENT_CHARGEBACK_DISPUTE`.
+
+O webhook busca novamente a cobrança no Asaas, ignora eventos repetidos e evita que um evento vencido antigo derrube um período mais recente. Só troque para a API de produção depois de testar pagamento, repetição, atraso, cancelamento, reembolso e evento fora de ordem.
+
+### 3. Resend e cron
+
+Verifique um domínio no Resend e defina `RESEND_API_KEY` e `EMAIL_FROM`. Crie também `CRON_SECRET`; a Vercel executará diariamente `/api/cron/subscriptions` para lembretes e expiração. Sem Resend configurado, a cobrança continua funcionando, mas os e-mails ficam registrados como não enviados.
+
+### 4. Turnstile e GitHub App
+
+No Turnstile, autorize `orquestradordesites.vercel.app` e defina:
 
 ```text
 NEXT_PUBLIC_TURNSTILE_SITE_KEY
 TURNSTILE_SECRET_KEY
-TURNSTILE_EXPECTED_HOSTNAME=orquestrador-de-sites.vercel.app
-APP_ORIGIN=https://orquestrador-de-sites.vercel.app
+TURNSTILE_EXPECTED_HOSTNAME=orquestradordesites.vercel.app
+APP_ORIGIN=https://orquestradordesites.vercel.app
+BASE_URL=https://orquestradordesites.vercel.app
 ```
 
-Depois de salvar as variáveis, faça um novo deployment. O segredo e a chave privada ficam apenas no backend da Vercel e nunca são enviados ao navegador.
+Na GitHub App, mantenha `Contents: Read and write`, `Pull requests: Read and write` e `Metadata: Read-only`; aceite as permissões atualizadas e instale a App somente neste repositório. Defina as variáveis `GITHUB_*` descritas em `.env.example`.
 
-### Renovação e diagnóstico do Turnstile
+## Acesso pelo ChatGPT e outras IAs
 
-- O token da Cloudflare é válido por no máximo **5 minutos** e tem **uso único**. O servidor executa Siteverify para cada proposta; não há sessão de confiança de 25 minutos nem dispensa de validação.
-- O painel renova tokens antes de expirar, ao voltar de uma aba suspensa e depois de cada tentativa de envio. Se necessário, espera um token novo antes de enviar, sem apagar o formulário e sem repetir automaticamente uma criação de PR.
-- Após **25 minutos no painel**, é solicitado **Verificar novamente**. Esse é um controle adicional de interface: não altera a validade do token. A Cloudflare pode pedir interação antes disso.
-- A interface usa renderização explícita para funcionar ao fechar e reabrir o formulário. Não persiste tokens no navegador.
-- Erros de chave secreta, domínio, ação, indisponibilidade e token expirado são diferenciados. Uma marca de sucesso no widget ainda precisa ser confirmada pelo servidor.
-- Confira se as duas chaves são do **mesmo widget**. Para a produção atual, configure o hostname `orquestradordesites.vercel.app`, `TURNSTILE_EXPECTED_HOSTNAME=orquestradordesites.vercel.app`, `APP_ORIGIN=https://orquestradordesites.vercel.app` e `BASE_URL=https://orquestradordesites.vercel.app`.
-- O limite de envio existente continua ativo. Os testes usam respostas simuladas da Cloudflare; não substituem o teste com as credenciais reais em produção.
+O endpoint é `https://SEU-DOMINIO/mcp`. O perfil gera uma chave `os_...`, mostrada uma única vez; clientes MCP que aceitam cabeçalho personalizado devem enviar `Authorization: Bearer os_...`. Revogar/gerar outra chave invalida a anterior.
 
-## Conectar no ChatGPT
+Este MVP implementa token pessoal, não um servidor OAuth 2.1 completo. Alguns clientes, inclusive versões do ChatGPT que exigem discovery OAuth para conectores remotos, podem não aceitar cabeçalho Bearer manual. Nesse caso, a próxima fase é OAuth 2.1 com Authorization Code + PKCE; não reduza a segurança colocando a chave na URL.
 
-1. Abra **Configurações → Plugins**.
-2. Clique no botão **+** e escolha criar um novo plugin/conexão MCP.
-3. Preencha um nome, como `Orquestrador de Sites`.
-4. Em **URL do servidor**, cole `https://SEU-PROJETO.vercel.app/mcp`.
-5. Selecione **Sem autenticação**. Este servidor não usa OAuth nem acessa dados privados.
-6. Confirme o aviso de servidor MCP personalizado e clique em **Criar**.
-
-No chat, peça: `Mostre minhas skills de projeto`. Marque as opções desejadas e clique em **Confirmar seleção**. A segunda tela pede o link do chat ou do projeto.
-
-As skills existentes entram no contexto somente depois da confirmação. Uma nova skill enviada pelo formulário gera uma branch, atualiza o catálogo central, cria seu `SKILL.md` e abre um Pull Request. Ela não fica disponível imediatamente: a publicação global ocorre somente depois da revisão e do merge por Anny.
-
-Quando o painel está aberto dentro do ChatGPT, a seleção é enviada à conversa atual. Um link de outra conversa funciona como referência, mas não permite escrever nela. Quando o painel é aberto diretamente no navegador, ele copia um prompt pronto para ser colado no chat desejado.
-
-Após o merge de uma proposta, a integração Git da Vercel cria um novo deployment. O site e a interface do plugin usam o mesmo catálogo publicado, portanto a nova skill passa a aparecer para todos. Se houver mudança nas ferramentas ou metadados MCP, atualize a conexão na área de Plugins do ChatGPT e abra uma nova conversa.
-
-O endpoint `/mcp` é um endereço de protocolo para o ChatGPT, não uma página de navegação. Para visualizar o painel no navegador, abra somente a raiz do domínio, por exemplo `https://orquestrador-de-sites.vercel.app/`.
-
-## Autoria
-
-Idealização e requisitos de criação: **Anny Gabrielly · [@annygabb](https://github.com/annygabb)**. Todos os requisitos, decisões de produto e direcionamentos de criação deste projeto são de autoria de Anny Gabrielly.
-
-## Desenvolvimento local
+## Desenvolvimento e validação
 
 ```bash
 npm install
 npm run dev
-```
-
-Validação:
-
-```bash
 npm run typecheck
 npm run validate:skills
-npm run test:turnstile
+npm test
 npm run build
 ```
 
-Teste opcional de interface (requer Playwright e Chromium instalados): inicie o servidor com `NEXT_PUBLIC_TURNSTILE_SITE_KEY=local-test-site-key npm run dev -- --hostname 127.0.0.1 --port 3100` e execute `node tests/turnstile.browser.mjs`. Esse teste simula a Cloudflare e o envio; não cria propostas reais. Não use chaves de teste em produção.
+Os testes usam mocks e funções puras; eles não comprovam Google OAuth, entrega real de e-mail nem pagamento real. Antes de abrir cobrança em produção, conclua os testes de integração no sandbox e uma revisão jurídica/contábil básica para operação como pessoa física.
 
-## Fontes externas do catálogo
+## Operação segura
 
-As opções do catálogo apontam para seus projetos oficiais ou páginas de referência. Esses projetos não são redistribuídos neste repositório; o orquestrador entrega diretivas de uso e os links de origem para consulta ou instalação quando necessário.
+- mantenha segredos somente na Vercel e faça rotação após qualquer exposição;
+- use ambientes separados para sandbox e produção;
+- acompanhe `billing_events` com status `failed` e reprocese de forma controlada;
+- habilite MFA nas contas Vercel, Supabase, Asaas, Google, Resend e GitHub;
+- exporte backups do banco enquanto estiver no plano gratuito e faça um teste de restauração;
+- não prometa disponibilidade, compatibilidade universal ou resultado financeiro;
+- publique termos, privacidade, política de reembolso e um canal de suporte antes da venda real.
+
+## Autoria e referências
+
+Idealização, requisitos e direção do produto: **Anny Gabrielly · [@annygabb](https://github.com/annygabb)**. Recursos externos do catálogo continuam identificados como referências, não como skills instaladas. Cada fonte mantém seus próprios termos e licenças.
