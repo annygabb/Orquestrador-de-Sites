@@ -8,6 +8,7 @@ export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
         <Link className="site-brand" href="/"><span aria-hidden="true">OS</span><strong>Orquestrador</strong></Link>
         <div className="site-nav-links">
           <Link href="/#como-funciona">Como funciona</Link>
+          <Link href="/#impacto">Impacto</Link>
           <Link href="/#plano">Plano</Link>
         </div>
         <div className="site-nav-actions">

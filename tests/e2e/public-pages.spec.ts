@@ -3,7 +3,11 @@ import { expect, test } from "@playwright/test";
 test("landing carrega o visual, tema e console interativo", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle(/Orquestrador de Sites/);
-  await expect(page.locator("h1")).toContainText("Pare de recomeçar");
+  await expect(page.locator("h1")).toContainText("Transforme referências");
+  await expect(page.locator(".orbit-stage")).toBeVisible();
+  await expect(page.locator(".orbit-stage")).not.toHaveCSS("perspective", "none");
+  await expect(page.locator(".orbit-engine")).not.toHaveCSS("transform-style", "flat");
+  await expect(page.locator("body")).not.toContainText("Sem nota fiscal automatizada nesta versão");
   await expect(page.locator(".product-console")).toBeVisible();
   await expect(page.locator("body")).toHaveCSS("font-family", /DM Sans/);
   await expect(page.locator(".marketing-hero")).toHaveCSS("display", "grid");
@@ -18,6 +22,8 @@ test("landing carrega o visual, tema e console interativo", async ({ page }) => 
   expect(consoleStyle.border).toBeGreaterThan(0);
   await page.getByRole("button", { name: /PageSpeed e SEO/ }).click();
   await expect(page.getByText("3 escolhidas")).toBeVisible();
+  await page.locator(".estimator-controls input").first().fill("6");
+  await expect(page.locator(".time-estimator output")).toContainText("18h");
 });
 
 test("rotas privadas redirecionam e páginas legais funcionam", async ({ page }) => {
@@ -25,6 +31,9 @@ test("rotas privadas redirecionam e páginas legais funcionam", async ({ page })
   await expect(page).toHaveURL(/\/entrar/);
   await page.goto("/privacidade");
   await expect(page.getByRole("heading", { name: "Política de privacidade" })).toBeVisible();
+  await page.goto("/entrar?intent=signup");
+  await expect(page.getByRole("heading", { name: "Crie sua conta sem criar outra senha." })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Criar conta com Google" })).toBeVisible();
 });
 
 test("headers de segurança são enviados", async ({ request }) => {

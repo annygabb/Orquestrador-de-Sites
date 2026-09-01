@@ -1,6 +1,15 @@
 [
   {
     "date": "2026-09-01",
+    "macrostructure": "Guided Orbit",
+    "theme": "custom",
+    "theme_axes": "light-dark / kinetic-technical / cobalt-accent",
+    "enrichment": "interactive CSS 3D process model and user-driven time estimator",
+    "brief": "Página de vendas moderna, direta e interativa com login refinado",
+    "scope": "marketing-auth"
+  },
+  {
+    "date": "2026-09-01",
     "macrostructure": "Console-led Product Tour",
     "theme": "custom",
     "theme_axes": "light-dark / technical-console / cobalt-accent",

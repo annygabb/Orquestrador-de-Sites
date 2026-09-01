@@ -6,7 +6,7 @@
   --color-ink-soft: oklch(46% 0.035 252);
   --color-rule: oklch(88% 0.018 248);
   --color-rule-strong: oklch(72% 0.03 250);
-  --color-accent: oklch(55% 0.19 255);
+  --color-accent: oklch(50% 0.19 255);
   --color-accent-strong: oklch(44% 0.2 258);
   --color-accent-soft: oklch(94% 0.035 252);
   --color-success: oklch(57% 0.14 155);
@@ -52,12 +52,16 @@
   --color-danger-soft: oklch(95% 0.025 28);
   --color-success-soft: oklch(95% 0.03 155);
   --color-overlay: oklch(18% 0.025 255 / 0.58);
+  --color-orbit-glow: oklch(70% 0.16 252 / 0.24);
+  --color-orbit-shadow: oklch(22% 0.035 255 / 0.24);
+  --color-qr-paper: oklch(100% 0 0);
   --dur-micro: 120ms;
   --dur-long: 420ms;
   --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
   --z-base: 1;
   --z-raised: 10;
   --z-sticky: 200;
+  --z-sticky-nav: 300;
 }
 
 :root[data-theme="dark"] {
@@ -80,4 +84,6 @@
   --color-danger-soft: oklch(24% 0.045 28);
   --color-focus: oklch(78% 0.18 250);
   --shadow-dock: 0 1.25rem 3rem oklch(8% 0.02 255 / 0.42);
+  --color-orbit-glow: oklch(70% 0.16 252 / 0.2);
+  --color-orbit-shadow: oklch(8% 0.02 255 / 0.58);
 }

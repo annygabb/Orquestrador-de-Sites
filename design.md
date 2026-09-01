@@ -8,7 +8,7 @@ Modern-minimal, profissional, direto e orientado a confiança.
 
 ## Macrostructure family
 
-- Marketing: console de produto interativo, transformação, responsabilidade, preço e chamada final.
+- Marketing: Guided Orbit com modelo 3D do processo, comparação antes/depois, simulador ajustável, demonstração real, responsabilidade, preço e chamada final.
 - App: workbench responsivo com fluxo em três etapas e cards funcionais.
 - Conteúdo: leitura longa com título, resumo, texto e documentos relacionados.
 
@@ -41,6 +41,7 @@ Botão primário preenchido em azul. Botão secundário transparente com borda. 
 ## Per-page allowances
 
 - Marketing pode usar gradiente CSS discreto e o console real do seletor.
+- A assinatura visual de marketing é o modelo 3D do processo. Ele reage ao cursor, usa apenas CSS e deve respeitar movimento reduzido.
 - App não usa elementos decorativos sem função.
 - Conteúdo legal prioriza leitura e transparência.
 
@@ -50,4 +51,60 @@ Todas as páginas compartilham wordmark, paleta, tipografia, foco, botões, espa
 
 ## Exports
 
-Os formatos CSS, Tailwind, DTCG e shadcn são derivados de `tokens.css`. O projeto usa CSS nativo, portanto `tokens.css` é o export executável e fonte canônica.
+`tokens.css` é a fonte canônica e executável. Os mapeamentos portáteis abaixo usam os mesmos papéis sem criar uma segunda identidade.
+
+### Tailwind v4 `@theme`
+
+```css
+@theme {
+  --color-paper: oklch(98.2% 0.006 240);
+  --color-ink: oklch(22% 0.035 255);
+  --color-accent: oklch(50% 0.19 255);
+  --color-focus: oklch(62% 0.2 252);
+  --font-display: "Space Grotesk Variable", sans-serif;
+  --font-body: "DM Sans Variable", sans-serif;
+  --font-utility: "IBM Plex Mono", monospace;
+  --spacing-md: 1.5rem;
+  --radius-card: 1rem;
+  --radius-input: 0.75rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+```
+
+### DTCG `tokens.json`
+
+```json
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "color": {
+    "paper": { "$value": "oklch(98.2% 0.006 240)", "$type": "color" },
+    "ink": { "$value": "oklch(22% 0.035 255)", "$type": "color" },
+    "accent": { "$value": "oklch(50% 0.19 255)", "$type": "color" },
+    "focus": { "$value": "oklch(62% 0.2 252)", "$type": "color" }
+  },
+  "font": {
+    "display": { "$value": "Space Grotesk Variable, sans-serif", "$type": "fontFamily" },
+    "body": { "$value": "DM Sans Variable, sans-serif", "$type": "fontFamily" }
+  },
+  "space": { "md": { "$value": "1.5rem", "$type": "dimension" } }
+}
+```
+
+### shadcn/ui
+
+```css
+:root {
+  --background: 98.2% 0.006 240;
+  --foreground: 22% 0.035 255;
+  --card: 99.4% 0.005 245;
+  --card-foreground: 22% 0.035 255;
+  --primary: 50% 0.19 255;
+  --primary-foreground: 99% 0.003 250;
+  --muted: 95.8% 0.012 245;
+  --muted-foreground: 46% 0.035 252;
+  --border: 88% 0.018 248;
+  --input: 72% 0.03 250;
+  --ring: 62% 0.2 252;
+  --radius: 1rem;
+}
+```
