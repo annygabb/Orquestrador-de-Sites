@@ -5,7 +5,17 @@ test("landing carrega o visual, tema e console interativo", async ({ page }) => 
   await expect(page).toHaveTitle(/Orquestrador de Sites/);
   await expect(page.locator("h1")).toContainText("Pare de recomeçar");
   await expect(page.locator(".product-console")).toBeVisible();
-  await expect(page.locator("link[href*='_next/static/css']").first()).toHaveCount(1);
+  await expect(page.locator("body")).toHaveCSS("font-family", /DM Sans/);
+  await expect(page.locator(".marketing-hero")).toHaveCSS("display", "grid");
+  const titleSize = await page.locator("h1").evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize));
+  const consoleStyle = await page.locator(".product-console").evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { background: style.backgroundColor, radius: Number.parseFloat(style.borderRadius), border: Number.parseFloat(style.borderTopWidth) };
+  });
+  expect(titleSize).toBeGreaterThan(36);
+  expect(consoleStyle.background).not.toBe("rgba(0, 0, 0, 0)");
+  expect(consoleStyle.radius).toBeGreaterThan(8);
+  expect(consoleStyle.border).toBeGreaterThan(0);
   await page.getByRole("button", { name: /PageSpeed e SEO/ }).click();
   await expect(page.getByText("3 escolhidas")).toBeVisible();
 });
