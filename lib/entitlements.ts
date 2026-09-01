@@ -1,12 +1,13 @@
-import { createHash, randomBytes } from "node:crypto";
 import type { User } from "@supabase/supabase-js";
 import { createAdminClient } from "./supabase/admin";
 import { hasSupabaseConfig } from "./supabase/config";
 import { createClient } from "./supabase/server";
 import { subscriptionEntitlement, type Entitlement, type EntitlementState, type SubscriptionRow } from "./subscription-access";
+import { createAccessToken, hashAccessToken } from "./access-token";
 
 export { subscriptionEntitlement } from "./subscription-access";
 export type { Entitlement, EntitlementState } from "./subscription-access";
+export { createAccessToken, hashAccessToken } from "./access-token";
 
 async function entitlementForUser(userId: string): Promise<Entitlement> {
   const admin = createAdminClient();
@@ -32,21 +33,12 @@ export async function currentEntitlement(): Promise<Entitlement> {
   return entitlementForUser(user.id);
 }
 
-export function hashAccessToken(token: string) {
-  return createHash("sha256").update(token).digest("hex");
-}
-
-export function createAccessToken() {
-  const plain = `os_${randomBytes(30).toString("base64url")}`;
-  return { plain, hash: hashAccessToken(plain), prefix: plain.slice(0, 10) };
-}
-
 export async function requestEntitlement(request: Request): Promise<Entitlement> {
   const authorization = request.headers.get("authorization");
   if (authorization?.startsWith("Bearer os_")) {
     const admin = createAdminClient();
     const tokenHash = hashAccessToken(authorization.slice(7));
-    const { data } = await admin.from("access_tokens").select("user_id,revoked_at").eq("token_hash", tokenHash).is("revoked_at", null).maybeSingle();
+    const { data } = await admin.from("access_tokens").select("user_id,revoked_at,expires_at").eq("token_hash", tokenHash).is("revoked_at", null).gt("expires_at", new Date().toISOString()).maybeSingle();
     if (!data) return { allowed: false, state: "inactive" };
     await admin.from("access_tokens").update({ last_used_at: new Date().toISOString() }).eq("token_hash", tokenHash);
     return entitlementForUser(data.user_id);

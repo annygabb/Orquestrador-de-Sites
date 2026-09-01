@@ -36,7 +36,7 @@ export async function createActivationPayment(input: { userId: string; customerI
       billingType: "UNDEFINED",
       value: ACTIVATION_PRICE_CENTS / 100,
       dueDate: isoDate(addDays(new Date(), 3)),
-      description: "Ativação do Orquestrador de Sites — inclui 30 dias de acesso",
+      description: "Ativação do Orquestrador de Sites, inclui 30 dias de acesso",
       externalReference: `activation:${input.userId}`,
     }),
   });

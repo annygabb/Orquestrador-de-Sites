@@ -51,4 +51,4 @@ O MVP usa uma chave pessoal Bearer gerada no perfil. Isso bloqueia imediatamente
 4. Backups automatizados externos quando houver clientes pagantes.
 5. Só então ativar chaves reais e aceitar pagamentos.
 
-O MVP não inclui emissão automática de nota fiscal. Como a operação inicial será por CPF em Silvânia–GO, a obrigação tributária e a forma correta de documento devem ser confirmadas com apoio contábil antes de vender.
+O MVP não inclui emissão automática de nota fiscal. Como a operação inicial será por CPF em Silvânia, Goiás, a obrigação tributária e a forma correta de documento devem ser confirmadas com apoio contábil antes de vender.

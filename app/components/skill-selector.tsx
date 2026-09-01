@@ -9,6 +9,7 @@ import { useMcpApp } from "../hooks/use-mcp-app";
 import { useTurnstile } from "../hooks/use-turnstile";
 import { AutoGrowTextarea } from "./auto-grow-textarea";
 import { ThemeToggle } from "./theme-toggle";
+import { csrfHeaders } from "@/lib/client-security";
 
 type Tab = "all" | CatalogKind;
 type Stage = "select" | "destination" | "done";
@@ -16,9 +17,7 @@ type SkillDraft = { name: string; description: string; directive: string; source
 type DeliveryMode = "chat" | "clipboard";
 
 const emptyDraft: SkillDraft = { name: "", description: "", directive: "", source: "" };
-const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-
-export default function SkillSelector() {
+export default function SkillSelector({ turnstileSiteKey }: { turnstileSiteKey?: string }) {
   const { app, connected, embedded, displayMode, canExpand, toggleDisplayMode } = useMcpApp();
   const [page, setPage] = useState(0);
   const [selectedOnly, setSelectedOnly] = useState(false);
@@ -111,9 +110,10 @@ export default function SkillSelector() {
         const result = await app.callServerTool({ name: "submit_skill_proposal", arguments: payload });
         data = result.structuredContent as typeof data;
       } else {
+        const csrf = await csrfHeaders();
         const response = await fetch("/api/skills/submit", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...csrf },
           body: JSON.stringify(payload),
         });
         data = await response.json() as typeof data;
@@ -194,7 +194,7 @@ export default function SkillSelector() {
   return (
     <main className="panel-v2" data-embedded={embedded || undefined}>
       <header className="panel-header">
-        <a className="wordmark" href="#top" aria-label="Orquestrador de Sites — início"><span className="wordmark-mark">OS</span><span>Orquestrador de Sites</span></a>
+        <a className="wordmark" href="#top" aria-label="Orquestrador de Sites, início"><span className="wordmark-mark">OS</span><span>Orquestrador de Sites</span></a>
         <div className="panel-host-actions">
           <ThemeToggle compact />
           <span className={`host-status ${connected ? "is-connected" : ""}`}><span aria-hidden="true" />{connected ? "Conectado ao chat" : embedded ? "Conectando ao chat…" : "Modo navegador"}</span>
@@ -287,7 +287,7 @@ export default function SkillSelector() {
           </section>
           {visible.length === 0 && <div className="catalog-empty" role="status"><strong>{selectedOnly ? "Nenhuma seleção neste filtro." : "Nenhuma opção encontrada."}</strong><p>Tente outro termo ou volte ao catálogo completo.</p><button className="button-secondary" onClick={() => { setQuery(""); setTab("all"); setSelectedOnly(false); setPage(0); }}>Ver todas as opções</button></div>}
           {embedded && visible.length > 0 && <nav className="catalog-pagination" aria-label="Páginas do catálogo">
-            <span role="status">{pagination.start + 1}–{pagination.start + pagination.items.length} de {visible.length} opções</span>
+            <span role="status">{pagination.start + 1} a {pagination.start + pagination.items.length} de {visible.length} opções</span>
             {pagination.totalPages > 1 && <div><button className="button-secondary" disabled={pagination.currentPage === 0} onClick={() => changePage(pagination.currentPage - 1)} aria-label="Página anterior">←</button><span>{pagination.currentPage + 1} / {pagination.totalPages}</span><button className="button-secondary" disabled={pagination.currentPage + 1 === pagination.totalPages} onClick={() => changePage(pagination.currentPage + 1)} aria-label="Próxima página">→</button></div>}
           </nav>}
         </>
@@ -307,7 +307,7 @@ export default function SkillSelector() {
               <button className="button-primary destination-submit" disabled={!destinationLink.trim() || status === "saving"}>{status === "saving" ? "Preparando envio…" : connected ? "Enviar para este chat" : "Copiar e abrir o ChatGPT"}</button>
             </form>
           </div>
-          <aside className="selection-review" aria-label="Resumo da seleção"><span>Seleção confirmada</span><strong>{selectedItems.length} {selectedItems.length === 1 ? "opção" : "opções"}</strong><ul>{selectedItems.map((item) => <li key={item.id}>{item.name}{item.kind === "personalization" && <small className="external-resource-caption">Recurso externo — não é uma skill</small>}</li>)}</ul>{selectedReferences.length > 0 && <p className="external-resource-note">{externalResourceNotice}</p>}</aside>
+          <aside className="selection-review" aria-label="Resumo da seleção"><span>Seleção confirmada</span><strong>{selectedItems.length} {selectedItems.length === 1 ? "opção" : "opções"}</strong><ul>{selectedItems.map((item) => <li key={item.id}>{item.name}{item.kind === "personalization" && <small className="external-resource-caption">Recurso externo, não é uma skill</small>}</li>)}</ul>{selectedReferences.length > 0 && <p className="external-resource-note">{externalResourceNotice}</p>}</aside>
         </section>
       )}
 

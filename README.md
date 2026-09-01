@@ -48,7 +48,7 @@ Copie `.env.example` para seu ambiente local e registre os mesmos nomes na Verce
 3. Em Authentication, habilite Google e configure o Client ID e Client Secret do Google Cloud.
 4. No Google Cloud, autorize o callback exibido pelo Supabase, normalmente `https://SEU-PROJETO.supabase.co/auth/v1/callback`.
 5. No Supabase, registre a URL de produção e os previews permitidos.
-6. Defina `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` e `SUPABASE_SERVICE_ROLE_KEY`.
+6. Defina `SUPABASE_URL`, `SUPABASE_ANON_KEY` e `SUPABASE_SERVICE_ROLE_KEY` somente no servidor.
 7. Depois do primeiro login da administradora, marque manualmente `profiles.is_admin = true` apenas nessa conta.
 
 O painel público não recebe a service role. As políticas RLS limitam cada usuário às próprias linhas.
@@ -77,7 +77,7 @@ Verifique um domínio no Resend e defina `RESEND_API_KEY` e `EMAIL_FROM`. Crie t
 No Turnstile, autorize `orquestradordesites.vercel.app` e defina:
 
 ```text
-NEXT_PUBLIC_TURNSTILE_SITE_KEY
+TURNSTILE_SITE_KEY
 TURNSTILE_SECRET_KEY
 TURNSTILE_EXPECTED_HOSTNAME=orquestradordesites.vercel.app
 APP_ORIGIN=https://orquestradordesites.vercel.app

@@ -2,6 +2,9 @@
   "name": "orquestrador-de-sites",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=22 <25"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,23 +14,26 @@
     "test:turnstile": "node --experimental-transform-types --test tests/turnstile.test.mjs",
     "test:selection": "node --experimental-transform-types --test tests/selection-prompt.test.mjs tests/catalog-resources.test.mjs tests/panel-layout.test.mjs",
     "test:billing": "node --experimental-transform-types --test tests/billing.test.mjs",
-    "test": "npm run test:turnstile && npm run test:selection && npm run test:billing"
+    "test:security": "node --experimental-transform-types --test tests/security.test.mjs",
+    "test:e2e": "playwright test",
+    "test": "npm run test:turnstile && npm run test:selection && npm run test:billing && npm run test:security"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.3.0",
     "@fontsource-variable/space-grotesk": "^5.3.0",
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "@modelcontextprotocol/ext-apps": "1.1.2",
-    "@modelcontextprotocol/sdk": "1.25.2",
+    "@modelcontextprotocol/sdk": "1.26.0",
     "@supabase/ssr": "^0.12.5",
     "@supabase/supabase-js": "^2.112.4",
-    "mcp-handler": "1.0.7",
-    "next": "16.1.6",
+    "mcp-handler": "1.1.0",
+    "next": "16.3.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@playwright/test": "1.62.1",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",

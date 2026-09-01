@@ -1,4 +1,5 @@
 import { createAdminClient } from "./supabase/admin";
+import { escapeHtml } from "./html";
 
 export type EmailKind = "welcome" | "activation_paid" | "renewal_reminder" | "payment_overdue" | "access_suspended" | "subscription_canceled";
 
@@ -20,8 +21,9 @@ function template(kind: EmailKind, name: string, manageUrl: string) {
     access_suspended: "O período pago terminou sem renovação confirmada. O painel e o MCP foram bloqueados, mas seus dados continuam salvos.",
     subscription_canceled: "A renovação foi cancelada. Você mantém o acesso até o fim do período já pago.",
   };
-  const safeName = name.replace(/[<>&"']/g, "");
-  return `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;color:#172033"><h1 style="font-size:24px">Olá, ${safeName}</h1><p style="font-size:16px;line-height:1.6">${messages[kind]}</p><p><a href="${manageUrl}" style="color:#0b63e5;font-weight:700">Abrir meu perfil</a></p><p style="font-size:13px;color:#5e6778">Orquestrador de Sites · Idealização e requisitos por Anny Gabrielly</p></div>`;
+  const safeName = escapeHtml(name);
+  const safeManageUrl = escapeHtml(manageUrl);
+  return `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;color:#172033"><h1 style="font-size:24px">Olá, ${safeName}</h1><p style="font-size:16px;line-height:1.6">${messages[kind]}</p><p><a href="${safeManageUrl}" style="color:#0b63e5;font-weight:700">Abrir meu perfil</a></p><p style="font-size:13px;color:#5e6778">Orquestrador de Sites, idealização e requisitos por Anny Gabrielly</p></div>`;
 }
 
 export async function sendLifecycleEmail(input: { userId: string; email: string; name?: string | null; kind: EmailKind; dedupeKey: string }) {

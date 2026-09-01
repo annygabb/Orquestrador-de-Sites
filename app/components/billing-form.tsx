@@ -1,6 +1,8 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { csrfHeaders } from "@/lib/client-security";
+import { isValidCpf } from "@/lib/cpf";
 
 export function BillingForm({ defaultName = "" }: { defaultName?: string }) {
   const [loading, setLoading] = useState(false);
@@ -11,7 +13,13 @@ export function BillingForm({ defaultName = "" }: { defaultName?: string }) {
     setLoading(true);
     setError("");
     const form = new FormData(event.currentTarget);
-    const response = await fetch("/api/billing/start", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: form.get("name"), cpf: form.get("cpf") }) });
+    if (!isValidCpf(String(form.get("cpf") ?? ""))) {
+      setError("Informe um CPF válido.");
+      setLoading(false);
+      return;
+    }
+    const csrf = await csrfHeaders();
+    const response = await fetch("/api/billing/start", { method: "POST", headers: { "Content-Type": "application/json", ...csrf }, body: JSON.stringify({ name: form.get("name"), cpf: form.get("cpf") }) });
     const data = await response.json().catch(() => ({}));
     if (!response.ok || !data.invoiceUrl) {
       setError(data.message || "A cobrança não pôde ser criada. Revise os dados e tente novamente.");

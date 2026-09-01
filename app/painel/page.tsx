@@ -16,5 +16,5 @@ export default async function PanelPage() {
     ? await requestEntitlement(new Request("https://internal.local/painel", { headers: { authorization: incoming.get("authorization") || "" } }))
     : await currentEntitlement();
   if (!entitlement.allowed) return <main className="access-gate"><section><p>Acesso protegido</p><h1>Sua seleção continua salva. O uso está pausado.</h1><span>{entitlement.state === "overdue" ? "A renovação não foi confirmada." : "Ative o plano para abrir o painel e usar o plugin no chat."}</span><div><Link className="button button--primary" href="/pagamento">Regularizar acesso</Link><Link className="button button--outline" href="/perfil">Ver assinatura</Link></div></section></main>;
-  return <SkillSelector />;
+  return <SkillSelector turnstileSiteKey={process.env.TURNSTILE_SITE_KEY} />;
 }

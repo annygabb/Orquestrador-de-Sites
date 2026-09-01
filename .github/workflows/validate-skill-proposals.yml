@@ -48,5 +48,14 @@ jobs:
       - name: Testar cobrança e política de acesso
         run: npm run test:billing
 
+      - name: Testar controles de segurança
+        run: npm run test:security
+
+      - name: Instalar navegador E2E
+        run: npx playwright install --with-deps chromium
+
+      - name: Testar interface desktop e celular
+        run: npm run test:e2e
+
       - name: Gerar build de produção
         run: npm run build

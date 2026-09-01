@@ -1,5 +1,14 @@
 [
   {
+    "date": "2026-09-01",
+    "macrostructure": "Console-led Product Tour",
+    "theme": "custom",
+    "theme_axes": "light-dark / technical-console / cobalt-accent",
+    "enrichment": "interactive skill selector",
+    "brief": "Front completo, responsivo e visualmente verificável com segurança integrada",
+    "scope": "marketing-app-account-legal"
+  },
+  {
     "date": "2026-08-29",
     "macrostructure": "Split Studio",
     "theme": "custom",

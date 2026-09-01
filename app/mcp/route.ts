@@ -14,10 +14,10 @@ import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
 const RESOURCE_URI = "ui://orquestrador-de-sites/seletor.html?v=6";
-const requestAuthorization = new AsyncLocalStorage<string>();
+const requestContext = new AsyncLocalStorage<{ authorization: string; origin: string }>();
 
 async function requireMcpAccess() {
-  const authorization = requestAuthorization.getStore() || "";
+  const authorization = requestContext.getStore()?.authorization || "";
   const entitlement = await requestEntitlement(new Request("https://internal.local/mcp", { headers: { authorization } }));
   if (!entitlement.allowed) throw new ProposalError("Sua assinatura não está ativa. Abra o perfil para regularizar o acesso.", 402, "SUBSCRIPTION_REQUIRED");
   return authorization;
@@ -25,7 +25,8 @@ async function requireMcpAccess() {
 
 async function fetchPageHtml() {
   const authorization = await requireMcpAccess();
-  const response = await fetch(new URL("painel", baseURL), { headers: { authorization }, cache: "no-store" });
+  const origin = requestContext.getStore()?.origin ?? baseURL;
+  const response = await fetch(new URL("/painel", origin), { headers: { authorization }, cache: "no-store" });
   if (!response.ok) throw new Error(`Não foi possível carregar a interface: ${response.status}`);
   return prepareMcpPage(await response.text());
 }
@@ -38,6 +39,7 @@ const handler = createMcpHandler(async (server) => {
     { mimeType: RESOURCE_MIME_TYPE },
     async () => {
       await requireMcpAccess();
+      const origin = requestContext.getStore()?.origin ?? baseURL;
       return { contents: [
         {
           uri: RESOURCE_URI,
@@ -46,8 +48,8 @@ const handler = createMcpHandler(async (server) => {
           _meta: {
             ui: {
               csp: {
-                connectDomains: [baseURL, "https://challenges.cloudflare.com"],
-                resourceDomains: [baseURL, "https://challenges.cloudflare.com"],
+                connectDomains: [origin, "https://challenges.cloudflare.com"],
+                resourceDomains: [origin, "https://challenges.cloudflare.com"],
                 frameDomains: ["https://challenges.cloudflare.com"],
               },
             },
@@ -175,7 +177,7 @@ async function protectedHandler(request: Request) {
   const authorization = request.headers.get("authorization") || "";
   const entitlement = await requestEntitlement(request);
   if (!entitlement.allowed) return entitlementResponse(entitlement);
-  return requestAuthorization.run(authorization, () => handler(request));
+  return requestContext.run({ authorization, origin: new URL(request.url).origin }, () => handler(request));
 }
 
 export const GET = protectedHandler;
