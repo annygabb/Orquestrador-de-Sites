@@ -34,7 +34,12 @@ export default async function HomePage() {
         <svg className="hero-draw-line" viewBox="0 0 900 120" fill="none" aria-hidden="true"><path d="M4 97C163 3 270 118 424 53C576-12 677 104 896 17" pathLength="1" /></svg>
       </section>
 
-      <section className="demand-strip" aria-label="Demandas organizadas pelo sistema"><div><span>DESIGN</span><span>SEGURANÇA</span><span>SEO</span><span>PERFORMANCE</span><span>CONVERSÃO</span><span>ACESSIBILIDADE</span></div></section>
+      <section className="demand-strip" aria-label="Demandas organizadas pelo sistema">
+        <div className="demand-track">
+          <div className="demand-group"><span>DESIGN</span><span>SEGURANÇA</span><span>SEO</span><span>PERFORMANCE</span><span>CONVERSÃO</span><span>ACESSIBILIDADE</span></div>
+          <div className="demand-group" aria-hidden="true"><span>DESIGN</span><span>SEGURANÇA</span><span>SEO</span><span>PERFORMANCE</span><span>CONVERSÃO</span><span>ACESSIBILIDADE</span></div>
+        </div>
+      </section>
 
       <PhoneStory />
 
@@ -52,7 +57,6 @@ export default async function HomePage() {
             <p>Exemplo visual. O resultado real depende da complexidade e da sua rotina.</p>
           </article>
         </div>
-        <details className="behance-reference" data-reveal><summary>Ver referência visual do painel de acompanhamento <span aria-hidden="true">+</span></summary><div><iframe src="https://www.behance.net/embed/project/232976091?ilo0=1" title="Referência de dashboard Ledgerix no Behance" height="316" width="404" allowFullScreen loading="lazy" frameBorder="0" allow="clipboard-write" referrerPolicy="strict-origin-when-cross-origin" /><p>Referência externa de linguagem visual. Não representa uma tela pronta do produto.</p></div></details>
       </section>
 
       <section className="selector-sales" id="experimente" aria-labelledby="selector-title">

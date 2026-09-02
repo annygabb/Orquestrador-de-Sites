@@ -56,12 +56,6 @@ export function MarketingMotion() {
         });
       });
 
-      gsap.to(".demand-strip > div", {
-        xPercent: -18,
-        ease: "none",
-        scrollTrigger: { trigger: ".demand-strip", start: "top bottom", end: "bottom top", scrub: 1 },
-      });
-
       gsap.fromTo(".gain-chart__line", { strokeDasharray: 1, strokeDashoffset: 1 }, {
         strokeDashoffset: 0,
         duration: 1.25,

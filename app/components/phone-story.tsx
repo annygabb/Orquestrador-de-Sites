@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 
 const stages = [
   {
@@ -45,6 +45,7 @@ const stages = [
 
 export function PhoneStory({ compact = false }: { compact?: boolean }) {
   const [active, setActive] = useState(compact ? 3 : 0);
+  const [tilt, setTilt] = useState({ x: compact ? 5 : 7, y: compact ? -9 : -5 });
   const reducedMotion = useReducedMotion();
   const stageRefs = useRef<Array<HTMLElement | null>>([]);
 
@@ -68,16 +69,44 @@ export function PhoneStory({ compact = false }: { compact?: boolean }) {
     return () => { disposed = true; cleanup?.(); };
   }, [compact, reducedMotion]);
 
+  function rotateFromPointer(event: PointerEvent<HTMLDivElement>) {
+    if (reducedMotion) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+    event.currentTarget.style.setProperty("--pointer-x", `${(x + 0.5) * 100}%`);
+    event.currentTarget.style.setProperty("--pointer-y", `${(y + 0.5) * 100}%`);
+    setTilt({ x: y * -18, y: x * 24 });
+  }
+
+  function resetTilt() {
+    setTilt({ x: compact ? 5 : 7 - active, y: compact ? -9 : -5 + active * 2 });
+  }
+
   const stage = stages[active];
   const phone = (
     <div className="phone-scene" data-phone-stage={active}>
       <div className="phone-aura" aria-hidden="true" />
-      <motion.div className="phone-device" animate={reducedMotion ? undefined : { rotateY: compact ? -9 : -5 + active * 2, rotateX: compact ? 5 : 7 - active, y: compact ? 0 : active % 2 ? -8 : 0 }} transition={{ duration: .7, ease: [0.16, 1, 0.3, 1] }}>
-        <Image src="/orquestrador-phone.jpg" alt="Celular exibindo a evolução de um projeto organizado pelo Orquestrador" width={736} height={822} priority={compact} sizes={compact ? "(max-width: 768px) 90vw, 44vw" : "(max-width: 900px) 82vw, 40vw"} />
+      <motion.div
+        className="phone-device"
+        animate={reducedMotion ? undefined : { rotateY: tilt.y, rotateX: tilt.x, y: compact ? 0 : active % 2 ? -8 : 0 }}
+        transition={{ duration: .55, ease: [0.16, 1, 0.3, 1] }}
+        drag={reducedMotion ? false : true}
+        dragConstraints={{ left: -18, right: 18, top: -14, bottom: 14 }}
+        dragElastic={0.1}
+        dragSnapToOrigin
+        onPointerMove={rotateFromPointer}
+        onPointerLeave={resetTilt}
+        onFocus={resetTilt}
+        role="img"
+        tabIndex={0}
+        aria-label="Celular 3D interativo. Mova o cursor ou arraste para girar."
+      >
+        <Image src="/orquestrador-phone.webp" alt="" width={1024} height={1536} priority={compact} sizes={compact ? "(max-width: 768px) 90vw, 44vw" : "(max-width: 900px) 82vw, 40vw"} />
         <div className="phone-screen">
           <AnimatePresence mode="wait">
             <motion.div key={stage.step} className="phone-ui" initial={reducedMotion ? false : { opacity: 0, y: 20, scale: .96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={reducedMotion ? undefined : { opacity: 0, y: -12, scale: 1.02 }} transition={{ duration: .38 }}>
-              <header><span>OS / PROJETO</span><b>{stage.step}/04</b></header>
+              <header><span>OS / PROJETO</span><b>ATIVO</b></header>
               <div className="phone-ui__status"><i aria-hidden="true" /><span>{stage.status}</span></div>
               <strong>{stage.title}</strong>
               <div className="phone-ui__cards">
@@ -89,9 +118,7 @@ export function PhoneStory({ compact = false }: { compact?: boolean }) {
           </AnimatePresence>
         </div>
       </motion.div>
-      <motion.div className="skill-chip skill-chip--design" animate={reducedMotion ? undefined : { y: [0, -7, 0] }} transition={{ duration: 4, repeat: Infinity }}>Design</motion.div>
-      <motion.div className="skill-chip skill-chip--security" animate={reducedMotion ? undefined : { y: [0, 8, 0] }} transition={{ duration: 5, repeat: Infinity }}>Segurança</motion.div>
-      <motion.div className="skill-chip skill-chip--speed" animate={reducedMotion ? undefined : { y: [0, -5, 0] }} transition={{ duration: 4.6, repeat: Infinity }}>Performance</motion.div>
+      <span className="phone-control-hint">Mova ou arraste para girar</span>
     </div>
   );
 
@@ -103,7 +130,15 @@ export function PhoneStory({ compact = false }: { compact?: boolean }) {
       <div className="phone-story__steps">
         <header><p>Veja o processo mudar</p><h2 id="phone-story-title">Cada skill melhora uma parte visível do projeto.</h2></header>
         {stages.map((item, index) => (
-          <article key={item.step} ref={(element) => { stageRefs.current[index] = element; }} className={active === index ? "is-active" : ""}>
+          <article
+            key={item.step}
+            ref={(element) => { stageRefs.current[index] = element; }}
+            className={active === index ? "is-active" : ""}
+            aria-current={active === index ? "step" : undefined}
+            tabIndex={0}
+            onFocus={() => setActive(index)}
+            onPointerEnter={() => setActive(index)}
+          >
             <span>{item.step}</span><p>{item.label}</p><h3>{item.title}</h3><div>{item.text}</div>
           </article>
         ))}

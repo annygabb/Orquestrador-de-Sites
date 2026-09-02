@@ -10,7 +10,8 @@ test("hero comunica a transformação principal e oferece dois caminhos claros",
   assert.match(page, /Mais direção/);
   assert.match(page, /Organizar meu próximo site/);
   assert.match(page, /Ver a transformação/);
-  assert.match(page, /www\.behance\.net\/embed\/project\/232976091/);
+  assert.doesNotMatch(page, /behance/i);
+  assert.match(page, /demand-group[^]*aria-hidden="true"/);
 });
 
 test("experiência combina celular 3D, GSAP, Framer Motion e Lenis", async () => {
@@ -19,9 +20,13 @@ test("experiência combina celular 3D, GSAP, Framer Motion e Lenis", async () =>
     read("../app/components/marketing-motion.tsx"),
   ]);
 
-  assert.match(phone, /orquestrador-phone\.jpg/);
+  assert.match(phone, /orquestrador-phone\.webp/);
   assert.match(phone, /from "framer-motion"/);
   assert.match(phone, /ScrollTrigger/);
+  assert.match(phone, /dragSnapToOrigin/);
+  assert.match(phone, /aria-current/);
+  assert.doesNotMatch(phone, /skill-chip/);
+  assert.doesNotMatch(phone, /\/04/);
   assert.match(motion, /import\("gsap"\)/);
   assert.match(motion, /import\("lenis"\)/);
 });
@@ -39,12 +44,43 @@ test("movimento e layout respeitam acessibilidade e telas pequenas", async () =>
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
-test("preloader é curto e a referência externa está liberada somente no frame-src", async () => {
+test("preloader é curto e a política de frames não inclui a referência removida", async () => {
   const [preloader, proxy] = await Promise.all([
     read("../app/components/page-preloader.tsx"),
     read("../proxy.ts"),
   ]);
   assert.match(preloader, /720/);
-  assert.match(proxy, /frame-src[^\n]+https:\/\/www\.behance\.net/);
-  assert.doesNotMatch(proxy, /script-src[^\n]+behance/);
+  assert.doesNotMatch(proxy, /behance/i);
+});
+
+test("faixa de capacidades repete continuamente sem depender da rolagem", async () => {
+  const [page, motion, styles] = await Promise.all([
+    read("../app/page.tsx"),
+    read("../app/components/marketing-motion.tsx"),
+    read("../app/marketing.css"),
+  ]);
+  assert.match(page, /className="demand-group" aria-hidden="true"/);
+  assert.match(styles, /animation: demand-marquee 24s linear infinite/);
+  assert.doesNotMatch(motion, /demand-strip/);
+});
+
+test("celular usa recorte transparente, texturas por etapa e Open Graph próprio", async () => {
+  const [phone, styles, layout, og] = await Promise.all([
+    read("../app/components/phone-story.tsx"),
+    read("../app/marketing.css"),
+    read("../app/layout.tsx"),
+    read("../app/opengraph-image.tsx"),
+  ]);
+  assert.match(phone, /orquestrador-phone\.webp/);
+  assert.match(phone, /--pointer-x/);
+  assert.match(styles, /data-phone-stage="3"/);
+  assert.match(styles, /phone-texture/);
+  assert.match(layout, /summary_large_image/);
+  assert.match(og, /Menos procura/);
+});
+
+test("login focado força uma coluna e evita a sobreposição no desktop", async () => {
+  const styles = await read("../app/marketing.css");
+  assert.match(styles, /\.auth-card\.auth-card--focused[^}]+grid-template-columns: minmax\(0, 1fr\)/);
+  assert.match(styles, /\.auth-card--focused > \*[^}]+grid-column: 1 \/ -1/);
 });

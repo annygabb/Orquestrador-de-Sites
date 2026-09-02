@@ -14,8 +14,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_ORIGIN || "https://orquestradordesites.vercel.app"),
   title: { default: "Orquestrador de Sites", template: "%s · Orquestrador de Sites" },
   description: "Escolha skills e referências, confirme o processo e aplique ao seu projeto de site com IA.",
-  openGraph: { title: "Orquestrador de Sites", description: "Um processo claro para escolher e aplicar skills em projetos de sites com IA.", type: "website", locale: "pt_BR" },
-  twitter: { card: "summary", title: "Orquestrador de Sites", description: "Skills e referências organizadas para o seu próximo site." },
+  openGraph: { title: "Orquestrador de Sites", description: "Um processo claro para escolher e aplicar skills em projetos de sites com IA.", type: "website", locale: "pt_BR", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Orquestrador de Sites — menos procura e mais direção" }] },
+  twitter: { card: "summary_large_image", title: "Orquestrador de Sites", description: "Skills e referências organizadas para o seu próximo site.", images: ["/opengraph-image"] },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

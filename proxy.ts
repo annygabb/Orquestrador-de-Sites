@@ -15,7 +15,7 @@ export async function proxy(request: NextRequest) {
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self' data:",
     `connect-src 'self' ${supabaseOrigin} https://challenges.cloudflare.com`.trim(),
-    "frame-src https://challenges.cloudflare.com https://*.asaas.com https://www.behance.net",
+    "frame-src https://challenges.cloudflare.com https://*.asaas.com",
     "frame-ancestors 'self' https://chatgpt.com https://*.chatgpt.com",
     "img-src 'self' data: blob: https://*.supabase.co https://lh3.googleusercontent.com",
     "upgrade-insecure-requests",

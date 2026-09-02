@@ -7,7 +7,7 @@
     "body": "DM Sans Variable",
     "note": "Salty Ages requires a separately licensed webfont file"
   },
-  "palette": ["off-white", "ink", "acid lime", "blue", "coral"],
-  "motion": ["GSAP", "Lenis", "Framer Motion", "CSS perspective"],
-  "constraints": ["reduced motion", "keyboard focus", "320px minimum", "honest simulated metrics", "quick preloader"]
+  "palette": ["off-white", "cobalt blue", "navy", "coral"],
+  "motion": ["GSAP", "Lenis", "Framer Motion", "interactive CSS perspective"],
+  "constraints": ["reduced motion", "keyboard focus", "320px minimum", "honest simulated metrics", "quick contextual preloader", "transparent optimized phone asset", "Open Graph preview"]
 }

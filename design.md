@@ -4,17 +4,17 @@ Sistema visual único para a landing page, painel, conta e documentos do produto
 
 ## Genre
 
-Editorial direto na página de marketing, com preto, off-white e verde-lima; profissional e orientado a confiança nas áreas operacionais.
+Editorial direto na página de marketing, com azul-cobalto, azul-marinho e off-white; profissional e orientado a confiança nas áreas operacionais.
 
 ## Macrostructure family
 
-- Marketing: Product Transformation Story com celular em perspectiva, scrollytelling das skills, simulação antes/depois, demonstração real, motivo para assinar, preço e chamada final.
+- Marketing: Product Transformation Story com hero azul-marinho, celular transparente em perspectiva, scrollytelling das skills, simulação antes/depois em vidro luminoso, demonstração real, motivo para assinar, preço e chamada final.
 - App: workbench responsivo com fluxo em três etapas e cards funcionais.
 - Conteúdo: leitura longa com título, resumo, texto e documentos relacionados.
 
 ## Theme
 
-Todos os valores ficam em `tokens.css`. O produto mantém azul-cobalto como destaque funcional nas áreas operacionais; marketing e autenticação usam off-white, preto e verde-lima. Estados de sucesso, alerta e erro mantêm uso semântico.
+Todos os valores ficam em `tokens.css`. O produto mantém azul-cobalto como destaque funcional, azul-marinho para contraste e off-white como base em marketing e autenticação. Estados de sucesso, alerta e erro mantêm uso semântico.
 
 ## Typography
 
@@ -28,7 +28,7 @@ Escala de 4 pontos. Inputs usam raio de 12 px, cards 16 px e painéis 24 px. Ele
 
 ## Motion
 
-GSAP coordena entrada, desenho de linha, gráficos e scrollytelling; Framer Motion transforma a interface dentro do celular; Lenis suaviza a rolagem em dispositivos compatíveis. O preloader dura menos de um segundo. `prefers-reduced-motion` remove movimento espacial e preserva o conteúdo estático.
+GSAP coordena entrada, desenho de linha, gráficos e scrollytelling; Framer Motion transforma a interface dentro do celular e permite rotação direta por cursor ou arraste; Lenis suaviza a rolagem em dispositivos compatíveis. O preloader dura menos de um segundo. `prefers-reduced-motion` remove movimento espacial e preserva o conteúdo estático.
 
 ## Interaction
 

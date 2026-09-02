@@ -21,7 +21,7 @@ test("template de e-mail usa o mesmo escape para nome e URL", async () => {
   assert.match(email, /const safeName = escapeHtml\(name\)/);
   assert.match(email, /const safeManageUrl = escapeHtml\(manageUrl\)/);
   assert.match(email, /Seu processo começa agora/);
-  assert.match(email, /background:#a7ff20/);
+  assert.match(email, /background:#2f73ff/);
 });
 
 test("token MCP é aleatório e somente o hash é persistível", () => {

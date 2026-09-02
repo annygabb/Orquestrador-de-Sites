@@ -3,6 +3,15 @@
     "date": "2026-09-02",
     "macrostructure": "Product Transformation Story",
     "theme": "custom",
+    "theme_axes": "light-dark / editorial-direct / cobalt-navy-accent",
+    "enrichment": "transparent draggable 3D phone, continuous marquee, focused scrollytelling and repaired auth hierarchy",
+    "brief": "Refino visual azul com interação direta e login sem sobreposição",
+    "scope": "marketing-auth-email"
+  },
+  {
+    "date": "2026-09-02",
+    "macrostructure": "Product Transformation Story",
+    "theme": "custom",
     "theme_axes": "light-dark / editorial-direct / acid-lime-accent",
     "enrichment": "3D phone scrollytelling, expressive type, line draw, measurable impact dashboard and focused auth",
     "brief": "Página de vendas direta mostrando como cada skill transforma o projeto",
