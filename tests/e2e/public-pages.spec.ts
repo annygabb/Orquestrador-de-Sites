@@ -3,14 +3,14 @@ import { expect, test } from "@playwright/test";
 test("landing carrega o visual, tema e console interativo", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle(/Orquestrador de Sites/);
-  await expect(page.locator("h1")).toContainText("Transforme referências");
-  await expect(page.locator(".orbit-stage")).toBeVisible();
-  await expect(page.locator(".orbit-stage")).not.toHaveCSS("perspective", "none");
-  await expect(page.locator(".orbit-engine")).not.toHaveCSS("transform-style", "flat");
+  await expect(page.locator("h1")).toContainText("Menos procura");
+  await expect(page.locator(".phone-scene").first()).toBeVisible();
+  await expect(page.locator(".phone-scene").first()).not.toHaveCSS("perspective", "none");
+  await expect(page.locator(".phone-device").first()).not.toHaveCSS("transform-style", "flat");
   await expect(page.locator("body")).not.toContainText("Sem nota fiscal automatizada nesta versão");
   await expect(page.locator(".product-console")).toBeVisible();
   await expect(page.locator("body")).toHaveCSS("font-family", /DM Sans/);
-  await expect(page.locator(".marketing-hero")).toHaveCSS("display", "grid");
+  await expect(page.locator(".sales-hero")).toHaveCSS("display", "grid");
   const titleSize = await page.locator("h1").evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize));
   const consoleStyle = await page.locator(".product-console").evaluate((element) => {
     const style = getComputedStyle(element);
@@ -32,8 +32,8 @@ test("rotas privadas redirecionam e páginas legais funcionam", async ({ page })
   await page.goto("/privacidade");
   await expect(page.getByRole("heading", { name: "Política de privacidade" })).toBeVisible();
   await page.goto("/entrar?intent=signup");
-  await expect(page.getByRole("heading", { name: "Crie sua conta sem criar outra senha." })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Criar conta com Google" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Entre ou crie sua conta" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Continuar com Google" })).toBeVisible();
 });
 
 test("headers de segurança são enviados", async ({ request }) => {

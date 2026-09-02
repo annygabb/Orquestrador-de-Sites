@@ -65,6 +65,17 @@
   --color-hero-coral: oklch(74% 0.16 38);
   --color-hero-rule: oklch(48% 0.07 283);
   --color-hero-shadow: oklch(7% 0.025 284 / 0.56);
+  --color-sales-paper: oklch(97.4% 0.012 112);
+  --color-sales-card: oklch(99.7% 0.004 110);
+  --color-sales-ink: oklch(17% 0.025 115);
+  --color-sales-muted: oklch(45% 0.025 112);
+  --color-sales-lime: oklch(91% 0.25 127);
+  --color-sales-lime-soft: oklch(95% 0.095 125);
+  --color-sales-mint: oklch(86% 0.12 163);
+  --color-sales-blue: oklch(66% 0.16 247);
+  --color-sales-coral: oklch(72% 0.17 39);
+  --color-sales-rule: oklch(87% 0.02 112);
+  --color-sales-shadow: oklch(18% 0.03 112 / 0.12);
   --dur-micro: 120ms;
   --dur-long: 420ms;
   --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
@@ -96,4 +107,11 @@
   --shadow-dock: 0 1.25rem 3rem oklch(8% 0.02 255 / 0.42);
   --color-orbit-glow: oklch(70% 0.16 252 / 0.2);
   --color-orbit-shadow: oklch(8% 0.02 255 / 0.58);
+  --color-sales-paper: oklch(15% 0.018 115);
+  --color-sales-card: oklch(19% 0.02 115);
+  --color-sales-ink: oklch(96% 0.01 112);
+  --color-sales-muted: oklch(74% 0.02 112);
+  --color-sales-lime-soft: oklch(25% 0.06 126);
+  --color-sales-rule: oklch(31% 0.024 112);
+  --color-sales-shadow: oklch(6% 0.02 112 / 0.48);
 }

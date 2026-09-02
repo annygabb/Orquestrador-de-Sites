@@ -4,17 +4,17 @@ Sistema visual único para a landing page, painel, conta e documentos do produto
 
 ## Genre
 
-Atmosférico editorial na página de marketing; profissional, direto e orientado a confiança nas áreas operacionais.
+Editorial direto na página de marketing, com preto, off-white e verde-lima; profissional e orientado a confiança nas áreas operacionais.
 
 ## Macrostructure family
 
-- Marketing: núcleo espacial interativo com modelo WebGL do processo, comparação antes/depois, simulador ajustável, demonstração real, responsabilidade, preço e chamada final.
+- Marketing: Product Transformation Story com celular em perspectiva, scrollytelling das skills, simulação antes/depois, demonstração real, motivo para assinar, preço e chamada final.
 - App: workbench responsivo com fluxo em três etapas e cards funcionais.
 - Conteúdo: leitura longa com título, resumo, texto e documentos relacionados.
 
 ## Theme
 
-Todos os valores ficam em `tokens.css`. O produto mantém azul-cobalto como destaque funcional; o hero usa violeta, ciano e verde-limão apenas dentro da cena espacial. Estados de sucesso, alerta e erro têm uso semântico.
+Todos os valores ficam em `tokens.css`. O produto mantém azul-cobalto como destaque funcional nas áreas operacionais; marketing e autenticação usam off-white, preto e verde-lima. Estados de sucesso, alerta e erro mantêm uso semântico.
 
 ## Typography
 
@@ -28,7 +28,7 @@ Escala de 4 pontos. Inputs usam raio de 12 px, cards 16 px e painéis 24 px. Ele
 
 ## Motion
 
-GSAP coordena a entrada inicial; Framer Motion trata estados locais; Lenis suaviza a rolagem em dispositivos compatíveis. A cena WebGL responde diretamente ao ponteiro. A preferência `prefers-reduced-motion` remove movimento espacial e mantém apenas transições de opacidade de até 150 ms.
+GSAP coordena entrada, desenho de linha, gráficos e scrollytelling; Framer Motion transforma a interface dentro do celular; Lenis suaviza a rolagem em dispositivos compatíveis. O preloader dura menos de um segundo. `prefers-reduced-motion` remove movimento espacial e preserva o conteúdo estático.
 
 ## Interaction
 
@@ -40,8 +40,8 @@ Botão primário preenchido em azul. Botão secundário transparente com borda. 
 
 ## Per-page allowances
 
-- Marketing pode usar dois focos de luz CSS discretos e o console real do seletor.
-- A assinatura visual de marketing é o núcleo 3D WebGL do processo. Ele reage ao cursor, possui fallback estático e deve respeitar movimento reduzido.
+- Marketing pode usar dois focos de luz CSS discretos, linha autodesenhada, gráfico simulado e o console real do seletor.
+- A assinatura visual de marketing é o celular em perspectiva que evolui com cada grupo de skills durante a rolagem.
 - App não usa elementos decorativos sem função.
 - Conteúdo legal prioriza leitura e transparência.
 

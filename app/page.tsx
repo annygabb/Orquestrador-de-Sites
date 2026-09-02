@@ -3,43 +3,80 @@ import { currentUser } from "@/lib/entitlements";
 import { ACTIVATION_PRICE_CENTS, RENEWAL_PRICE_CENTS, moneyFromCents } from "@/lib/billing";
 import Link from "next/link";
 import { MarketingSelectorDemo } from "@/app/components/marketing-selector-demo";
-import { OrchestrationOrbit } from "@/app/components/orchestration-orbit";
 import { TimeEstimator } from "@/app/components/time-estimator";
 import { MarketingMotion } from "@/app/components/marketing-motion";
+import { PagePreloader } from "@/app/components/page-preloader";
+import { PhoneStory } from "@/app/components/phone-story";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const user = await currentUser();
-  return <><MarketingMotion /><SiteHeader signedIn={Boolean(user)} /><main className="marketing-main">
-    <section className="marketing-hero marketing-hero--immersive" aria-labelledby="hero-title" data-marketing-hero>
-      <div className="hero-atmosphere" aria-hidden="true" />
-      <div className="hero-copy">
-        <p className="hero-context" data-hero-reveal><span aria-hidden="true" />Para quem cria sites com IA e quer parar de improvisar</p>
-        <h1 id="hero-title" data-hero-reveal>Suas referências viram um plano que a IA consegue executar.</h1>
-        <p className="hero-lead" data-hero-reveal>Escolha skills, fontes visuais e critérios de qualidade em um só lugar. O Orquestrador separa o que inspira do que realmente será executado e entrega ao chat uma direção revisada por você.</p>
-        <div className="hero-actions" data-hero-reveal><Link className="button button--primary button--large" href={user ? "/painel" : "/entrar?intent=signup"}>{user ? "Abrir painel" : "Organizar meu próximo site"}</Link><a className="button button--outline button--large" href="#experimente">Ver o seletor funcionando</a></div>
-        <ol className="hero-route" aria-label="Como o processo funciona" data-hero-reveal>
-          <li><span>Escolha</span><strong>o que o projeto precisa</strong></li>
-          <li><span>Revise</span><strong>skills e referências</strong></li>
-          <li><span>Envie</span><strong>uma direção clara à IA</strong></li>
-        </ol>
-      </div>
-      <div data-hero-reveal><OrchestrationOrbit /></div>
-    </section>
+  const accountLink = user ? "/painel" : "/entrar?intent=signup";
 
-    <section className="sales-shift" id="como-funciona" aria-labelledby="shift-title" data-motion-section><div className="sales-shift__intro"><h2 id="shift-title">O problema não é falta de ferramenta. É começar sem um processo.</h2><p>Quando cada projeto exige procurar novamente fontes, lembrar boas práticas e reescrever instruções, o tempo some antes mesmo da construção começar.</p></div><div className="shift-compare"><article><span>Sem orquestração</span><ul><li>Links espalhados em abas e favoritos</li><li>Prompt muda conforme o que você lembrou</li><li>Referência externa confundida com instrução</li><li>Revisão acontece tarde, depois do retrabalho</li></ul></article><article><span>Com o Orquestrador</span><ul><li>Escolha orientada pelo objetivo do site</li><li>Skills e referências aparecem separadas</li><li>Seleção revisada antes de chegar à IA</li><li>Processo reaproveitável no próximo projeto</li></ul></article></div></section>
+  return <>
+    <PagePreloader />
+    <MarketingMotion />
+    <SiteHeader signedIn={Boolean(user)} />
+    <main className="sales-page">
+      <section className="sales-hero" aria-labelledby="hero-title" data-marketing-hero>
+        <div className="sales-hero__copy">
+          <p className="sales-eyebrow" data-hero-reveal><span>Para quem cria sites com IA</span> e não quer mais improvisar.</p>
+          <h1 id="hero-title" data-hero-reveal>Menos procura. <mark>Mais direção</mark> para construir.</h1>
+          <p className="sales-hero__lead" data-hero-reveal>O Orquestrador reúne skills, referências e critérios em um processo que você revisa antes de enviar para a IA.</p>
+          <div className="sales-hero__actions" data-hero-reveal>
+            <Link className="button sales-button--primary" href={accountLink}>{user ? "Abrir meu painel" : "Organizar meu próximo site"}<span aria-hidden="true">↗</span></Link>
+            <a className="button sales-button--secondary" href="#como-funciona">Ver a transformação</a>
+          </div>
+          <ul className="sales-proofline" data-hero-reveal><li>Você escolhe</li><li>O sistema organiza</li><li>A IA executa com contexto</li></ul>
+        </div>
+        <div className="sales-hero__visual" data-hero-reveal><PhoneStory compact /></div>
+        <svg className="hero-draw-line" viewBox="0 0 900 120" fill="none" aria-hidden="true"><path d="M4 97C163 3 270 118 424 53C576-12 677 104 896 17" pathLength="1" /></svg>
+      </section>
 
-    <section className="impact-section" id="impacto" aria-labelledby="impact-title"><div className="impact-copy"><h2 id="impact-title">Veja onde o tempo pode voltar para você.</h2><p>O simulador não inventa produtividade. Ajuste os três controles com a sua realidade e visualize a diferença entre procurar tudo do zero e trabalhar com uma seleção já organizada.</p></div><TimeEstimator /></section>
+      <section className="demand-strip" aria-label="Demandas organizadas pelo sistema"><div><span>DESIGN</span><span>SEGURANÇA</span><span>SEO</span><span>PERFORMANCE</span><span>CONVERSÃO</span><span>ACESSIBILIDADE</span></div></section>
 
-    <section className="experience-section" id="experimente" aria-labelledby="experience-title"><div className="experience-copy"><h2 id="experience-title">Você entende o produto usando, não lendo uma promessa.</h2><p>Escolha e retire opções neste exemplo. No painel completo, cada item explica quando usar, sua fonte e se é uma skill executável ou apenas uma referência externa.</p><Link className="text-action" href={user ? "/painel" : "/entrar?intent=signup"}>{user ? "Abrir o painel completo" : "Criar conta para continuar"}<span aria-hidden="true">→</span></Link></div><MarketingSelectorDemo /></section>
+      <PhoneStory />
 
-    <section className="transformation" aria-labelledby="transformation-title"><div className="transformation-copy"><h2 id="transformation-title">Do objetivo ao chat em três decisões visíveis.</h2><p>O sistema entrega valor antes de pedir configuração complexa: você entra, escolhe e confirma.</p></div><ol className="process-list"><li><span>1</span><div><h3>Defina o que precisa melhorar</h3><p>Design, segurança, desempenho, conteúdo ou conversão.</p></div></li><li><span>2</span><div><h3>Monte a combinação</h3><p>Use skills executáveis e referências externas claramente identificadas.</p></div></li><li><span>3</span><div><h3>Confirme antes de enviar</h3><p>Nada entra silenciosamente. Você mantém a decisão final sobre o projeto.</p></div></li></ol></section>
+      <section className="results-lab" id="impacto" aria-labelledby="results-title">
+        <header data-reveal><p>Impacto que você consegue medir</p><h2 id="results-title">Troque horas procurando por decisões que avançam o projeto.</h2><span>Use seus próprios números. O simulador mostra uma possibilidade de economia de tempo, não uma promessa de resultado.</span></header>
+        <div className="results-lab__grid">
+          <TimeEstimator />
+          <article className="gain-dashboard" data-reveal>
+            <div className="gain-dashboard__head"><div><span>PAINEL DE IMPACTO</span><strong>Antes × depois</strong></div><b>Simulação</b></div>
+            <div className="gain-kpis"><div><span>Busca dispersa</span><strong>5h</strong><small>por projeto</small></div><div className="is-highlighted"><span>Processo organizado</span><strong>2h</strong><small>por projeto</small></div></div>
+            <div className="gain-chart" role="img" aria-label="Gráfico ilustrativo mostrando redução gradual de cinco para duas horas de organização por projeto">
+              <svg viewBox="0 0 560 220" preserveAspectRatio="none"><defs><linearGradient id="gainFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="currentColor" stopOpacity=".38"/><stop offset="1" stopColor="currentColor" stopOpacity="0"/></linearGradient></defs><path className="gain-chart__area" d="M0 36C90 52 120 80 188 96C280 119 338 126 410 164C470 196 522 184 560 188V220H0Z"/><path className="gain-chart__line" pathLength="1" d="M0 36C90 52 120 80 188 96C280 119 338 126 410 164C470 196 522 184 560 188"/></svg>
+              <span className="gain-dot gain-dot--start">5h</span><span className="gain-dot gain-dot--end">2h</span>
+            </div>
+            <p>Exemplo visual. O resultado real depende da complexidade e da sua rotina.</p>
+          </article>
+        </div>
+        <details className="behance-reference" data-reveal><summary>Ver referência visual do painel de acompanhamento <span aria-hidden="true">+</span></summary><div><iframe src="https://www.behance.net/embed/project/232976091?ilo0=1" title="Referência de dashboard Ledgerix no Behance" height="316" width="404" allowFullScreen loading="lazy" frameBorder="0" allow="clipboard-write" referrerPolicy="strict-origin-when-cross-origin" /><p>Referência externa de linguagem visual. Não representa uma tela pronta do produto.</p></div></details>
+      </section>
 
-    <section className="responsibility-split" aria-labelledby="responsibility-title"><div><h2 id="responsibility-title">Por que escolher um sistema criado comigo.</h2><p>Você não compra um catálogo parado. O produto foi pensado por quem cria sites com IA e conhece a dor de alternar entre referências, prompts, revisão visual, segurança e desempenho no mesmo projeto.</p></div><dl><div><dt>Critério antes da quantidade</dt><dd>Cada recurso precisa ter função, fonte e momento de uso claros.</dd></div><div><dt>Decisão continua humana</dt><dd>O sistema organiza; você confere o que será aplicado antes do envio.</dd></div><div><dt>Site e chat conectados</dt><dd>O mesmo catálogo pode orientar o trabalho no painel e em clientes compatíveis com MCP.</dd></div><div><dt>Responsabilidade visível</dt><dd>Idealização e requisitos por Anny Gabrielly, @annygabb, com processo documentado e código aberto.</dd></div></dl></section>
+      <section className="selector-sales" id="experimente" aria-labelledby="selector-title">
+        <div className="selector-sales__copy" data-reveal><p>Teste antes de criar a conta</p><h2 id="selector-title">Escolha o que o próximo site precisa.</h2><span>Cada item explica se executa uma ação ou serve apenas como referência. Nada entra no projeto sem a sua confirmação.</span><Link className="text-action" href={accountLink}>{user ? "Abrir painel completo" : "Continuar com uma conta"}<b aria-hidden="true">→</b></Link></div>
+        <div data-reveal><MarketingSelectorDemo /></div>
+      </section>
 
-    <section className="pricing-section" id="plano" aria-labelledby="pricing-title"><div className="pricing-copy"><h2 id="pricing-title">Comece completo. Continue por um valor menor.</h2><p>A ativação inclui os primeiros 30 dias para você montar o processo, testar no seu fluxo e usar o painel completo. Depois, a renovação mantém o acesso sem esconder o vencimento ou o cancelamento.</p></div><article className="pricing-card"><div className="price-first"><span>Ativação + 30 dias</span><strong>{moneyFromCents(ACTIVATION_PRICE_CENTS)}</strong><small>pagamento inicial</small></div><div className="price-renewal"><span>Depois</span><strong>{moneyFromCents(RENEWAL_PRICE_CENTS)}<em>/mês</em></strong><small>renovação cancelável pelo perfil</small></div><ul><li>Painel completo de skills e referências</li><li>Uso pelo site e MCP enquanto o período estiver pago</li><li>Perfil com vencimento, valor e cancelamento</li><li>E-mails de cadastro, pagamento e situação da assinatura</li></ul><Link className="button button--primary button--large" href={user ? "/pagamento" : "/entrar?intent=signup"}>{user ? "Ativar acesso" : "Começar meu processo"}</Link></article></section>
+      <section className="why-pay" aria-labelledby="why-title">
+        <div className="why-pay__intro" data-reveal><p>Por que assinar</p><h2 id="why-title">Você não paga por uma lista. Paga para <mark>não recomeçar do zero.</mark></h2></div>
+        <div className="why-pay__items">
+          <article data-reveal><span>01</span><h3>Menos retrabalho</h3><p>Critérios de design, segurança e desempenho entram antes da execução.</p></article>
+          <article data-reveal><span>02</span><h3>Mais clareza no chat</h3><p>A IA recebe objetivo, limites, skills e referências em uma direção revisada.</p></article>
+          <article data-reveal><span>03</span><h3>Um processo reaproveitável</h3><p>O que funcionou deixa de ficar perdido e pode orientar o próximo projeto.</p></article>
+          <article data-reveal><span>04</span><h3>Decisão continua humana</h3><p>O sistema sugere e organiza. Você confirma o que realmente será usado.</p></article>
+        </div>
+      </section>
 
-    <section className="final-cta"><p>Menos tempo procurando. Mais clareza para construir.</p><Link className="button button--outline button--large" href={user ? "/painel" : "/entrar?intent=signup"}>{user ? "Abrir painel" : "Começar agora"}</Link></section>
-  </main><footer className="site-footer"><p>Seu próximo site começa com decisões mais claras.</p><div><strong>Orquestrador de Sites</strong><span>© 2026, Anny Gabrielly</span><nav aria-label="Links do rodapé"><Link href="/privacidade">Privacidade</Link><Link href="/termos">Termos</Link><Link href="/reembolso">Reembolso</Link><Link href="/cookies">Cookies</Link><a href="https://github.com/annygabb/Orquestrador-de-Sites" target="_blank" rel="noopener noreferrer">GitHub</a></nav></div></footer></>;
+      <section className="pricing-section sales-pricing" id="plano" aria-labelledby="pricing-title">
+        <div className="pricing-copy" data-reveal><p className="sales-section-label">UM COMEÇO COMPLETO</p><h2 id="pricing-title">Organize o processo agora. Continue por menos depois.</h2><span>A ativação inclui 30 dias para montar, testar e usar o fluxo completo. Depois, você decide se quer manter o acesso.</span></div>
+        <article className="pricing-card" data-reveal><div className="price-first"><span>Ativação + 30 dias</span><strong>{moneyFromCents(ACTIVATION_PRICE_CENTS)}</strong><small>pagamento inicial</small></div><div className="price-renewal"><span>Depois</span><strong>{moneyFromCents(RENEWAL_PRICE_CENTS)}<em>/mês</em></strong><small>cancelável pelo perfil</small></div><ul><li>Painel de skills e referências</li><li>Uso no site e em clientes compatíveis com MCP</li><li>Perfil com valor, vencimento e cancelamento</li><li>Avisos sobre cadastro, pagamento e acesso</li></ul><Link className="button sales-button--primary" href={user ? "/pagamento" : "/entrar?intent=signup"}>{user ? "Ativar acesso" : "Criar minha conta"}<span aria-hidden="true">↗</span></Link></article>
+      </section>
+
+      <section className="sales-final" data-reveal><p>Seu próximo site não precisa começar em vinte abas.</p><h2>Comece com uma direção.</h2><Link className="button sales-button--primary" href={accountLink}>{user ? "Abrir painel" : "Criar conta"}<span aria-hidden="true">↗</span></Link></section>
+    </main>
+    <footer className="site-footer"><p>Seu próximo site começa com decisões mais claras.</p><div><strong>Orquestrador de Sites</strong><span>© 2026, Anny Gabrielly</span><nav aria-label="Links do rodapé"><Link href="/privacidade">Privacidade</Link><Link href="/termos">Termos</Link><Link href="/reembolso">Reembolso</Link><Link href="/cookies">Cookies</Link><a href="https://github.com/annygabb/Orquestrador-de-Sites" target="_blank" rel="noopener noreferrer">GitHub</a></nav></div></footer>
+  </>;
 }

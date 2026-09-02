@@ -16,6 +16,14 @@ test("conteúdo de e-mail codifica HTML fornecido pelo usuário", () => {
   assert.equal(escapeHtml(`<img src=x onerror="alert(1)">`), "&lt;img src=x onerror=&quot;alert(1)&quot;&gt;");
 });
 
+test("template de e-mail usa o mesmo escape para nome e URL", async () => {
+  const email = await readFile(new URL("../lib/email-template.ts", import.meta.url), "utf8");
+  assert.match(email, /const safeName = escapeHtml\(name\)/);
+  assert.match(email, /const safeManageUrl = escapeHtml\(manageUrl\)/);
+  assert.match(email, /Seu processo começa agora/);
+  assert.match(email, /background:#a7ff20/);
+});
+
 test("token MCP é aleatório e somente o hash é persistível", () => {
   const first = createAccessToken();
   const second = createAccessToken();

@@ -26,8 +26,10 @@ export function MarketingMotion() {
       gsap.ticker.add(raf);
       gsap.ticker.lagSmoothing(0);
 
-      const heroTimeline = gsap.timeline({ defaults: { ease: "power3.out" } });
-      heroTimeline.fromTo("[data-hero-reveal]", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.72, stagger: 0.08, clearProps: "transform,opacity" });
+      const heroTimeline = gsap.timeline({ defaults: { ease: "power3.out" }, delay: 0.42 });
+      heroTimeline
+        .fromTo("[data-hero-reveal]", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.7, stagger: 0.07, clearProps: "transform,opacity" })
+        .fromTo(".hero-draw-line path", { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.1, ease: "power2.inOut" }, "-=.45");
 
       const section = document.querySelector("[data-motion-section]");
       if (section) {
@@ -41,6 +43,31 @@ export function MarketingMotion() {
           scrollTrigger: { trigger: section, start: "top 82%", once: true },
         });
       }
+
+      const reveals = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+      reveals.forEach((element) => {
+        gsap.fromTo(element, { opacity: 0, y: 28 }, {
+          opacity: 1,
+          y: 0,
+          duration: 0.68,
+          ease: "power3.out",
+          clearProps: "transform,opacity",
+          scrollTrigger: { trigger: element, start: "top 86%", once: true },
+        });
+      });
+
+      gsap.to(".demand-strip > div", {
+        xPercent: -18,
+        ease: "none",
+        scrollTrigger: { trigger: ".demand-strip", start: "top bottom", end: "bottom top", scrub: 1 },
+      });
+
+      gsap.fromTo(".gain-chart__line", { strokeDasharray: 1, strokeDashoffset: 1 }, {
+        strokeDashoffset: 0,
+        duration: 1.25,
+        ease: "power2.inOut",
+        scrollTrigger: { trigger: ".gain-dashboard", start: "top 76%", once: true },
+      });
 
       destroy = () => {
         heroTimeline.kill();
