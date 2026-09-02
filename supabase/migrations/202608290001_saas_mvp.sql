@@ -76,7 +76,7 @@ create table if not exists public.access_tokens (
   created_at timestamptz not null default now()
 );
 
-create table if not exists public.projects (
+create table if not exists public.user_projects (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
   name text not null check (char_length(name) between 1 and 120),
@@ -148,7 +148,7 @@ grant execute on function public.consume_rate_limit(text, text, integer, integer
 
 create index if not exists payments_user_created_idx on public.payments(user_id, created_at desc);
 create index if not exists subscriptions_due_idx on public.subscriptions(status, next_due_date);
-create index if not exists projects_user_updated_idx on public.projects(user_id, updated_at desc);
+create index if not exists user_projects_user_updated_idx on public.user_projects(user_id, updated_at desc);
 create index if not exists access_tokens_active_idx on public.access_tokens(token_hash, expires_at) where revoked_at is null;
 
 create or replace function public.set_updated_at() returns trigger language plpgsql security invoker set search_path = '' as $$
@@ -174,8 +174,8 @@ drop trigger if exists subscriptions_updated_at on public.subscriptions;
 create trigger subscriptions_updated_at before update on public.subscriptions for each row execute procedure public.set_updated_at();
 drop trigger if exists payments_updated_at on public.payments;
 create trigger payments_updated_at before update on public.payments for each row execute procedure public.set_updated_at();
-drop trigger if exists projects_updated_at on public.projects;
-create trigger projects_updated_at before update on public.projects for each row execute procedure public.set_updated_at();
+drop trigger if exists user_projects_updated_at on public.user_projects;
+create trigger user_projects_updated_at before update on public.user_projects for each row execute procedure public.set_updated_at();
 
 alter table public.profiles enable row level security;
 alter table public.subscriptions enable row level security;
@@ -183,7 +183,7 @@ alter table public.payments enable row level security;
 alter table public.billing_events enable row level security;
 alter table public.email_events enable row level security;
 alter table public.access_tokens enable row level security;
-alter table public.projects enable row level security;
+alter table public.user_projects enable row level security;
 alter table public.rate_limits enable row level security;
 alter table public.audit_logs enable row level security;
 alter table public.privacy_deletions enable row level security;
@@ -192,14 +192,14 @@ create policy "profiles_select_own" on public.profiles for select to authenticat
 create policy "profiles_update_own" on public.profiles for update to authenticated using ((select auth.uid()) = id) with check ((select auth.uid()) = id and is_admin = false);
 create policy "subscriptions_select_own" on public.subscriptions for select to authenticated using ((select auth.uid()) = user_id);
 create policy "payments_select_own" on public.payments for select to authenticated using ((select auth.uid()) = user_id);
-create policy "projects_select_own" on public.projects for select to authenticated using ((select auth.uid()) = user_id);
-create policy "projects_insert_own" on public.projects for insert to authenticated with check ((select auth.uid()) = user_id);
-create policy "projects_update_own" on public.projects for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
-create policy "projects_delete_own" on public.projects for delete to authenticated using ((select auth.uid()) = user_id);
+create policy "user_projects_select_own" on public.user_projects for select to authenticated using ((select auth.uid()) = user_id);
+create policy "user_projects_insert_own" on public.user_projects for insert to authenticated with check ((select auth.uid()) = user_id);
+create policy "user_projects_update_own" on public.user_projects for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+create policy "user_projects_delete_own" on public.user_projects for delete to authenticated using ((select auth.uid()) = user_id);
 
 revoke all on public.billing_events, public.email_events, public.access_tokens, public.rate_limits from anon, authenticated;
 revoke all on public.audit_logs, public.privacy_deletions from anon, authenticated;
-grant select on public.profiles, public.subscriptions, public.payments, public.projects to authenticated;
-grant insert, update, delete on public.projects to authenticated;
+grant select on public.profiles, public.subscriptions, public.payments, public.user_projects to authenticated;
+grant insert, update, delete on public.user_projects to authenticated;
 
 commit;
