@@ -1,34 +1,43 @@
 "use client";
 
-import type { PointerEvent } from "react";
+import dynamic from "next/dynamic";
+import { motion, useReducedMotion } from "framer-motion";
+
+const OrchestrationScene = dynamic(
+  () => import("@/app/components/orchestration-scene").then((module) => module.OrchestrationScene),
+  { ssr: false, loading: () => <div className="orchestration-poster" aria-hidden="true"><span /><i /><b /></div> },
+);
+
+const signals = [
+  { label: "Referências", value: "Fontes e repertório", className: "scene-signal--violet" },
+  { label: "Skills", value: "Ações executáveis", className: "scene-signal--cyan" },
+  { label: "Critérios", value: "Qualidade e limites", className: "scene-signal--lime" },
+];
 
 export function OrchestrationOrbit() {
-  function tilt(event: PointerEvent<HTMLDivElement>) {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
-    event.currentTarget.style.setProperty("--orbit-rotate-x", `${-y * 10}deg`);
-    event.currentTarget.style.setProperty("--orbit-rotate-y", `${x * 12}deg`);
-  }
-
-  function reset(event: PointerEvent<HTMLDivElement>) {
-    event.currentTarget.style.setProperty("--orbit-rotate-x", "0deg");
-    event.currentTarget.style.setProperty("--orbit-rotate-y", "0deg");
-  }
+  const reducedMotion = useReducedMotion();
 
   return (
-    <div className="orbit-stage" role="img" tabIndex={0} onPointerMove={tilt} onPointerLeave={reset} aria-label="Fluxo tridimensional: referências entram, são organizadas e viram instruções prontas">
-      <div className="orbit-engine">
-        <div className="orbit-ring orbit-ring--outer" aria-hidden="true" />
-        <div className="orbit-ring orbit-ring--inner" aria-hidden="true" />
-        <div className="orbit-core"><span>OS</span><strong>Orquestrar</strong><small>antes de executar</small></div>
-        <div className="orbit-node orbit-node--one"><span>Entrada</span><strong>Objetivo</strong></div>
-        <div className="orbit-node orbit-node--two"><span>Critério</span><strong>Skills</strong></div>
-        <div className="orbit-node orbit-node--three"><span>Saída</span><strong>Prompt claro</strong></div>
-        <div className="orbit-path orbit-path--one" aria-hidden="true" />
-        <div className="orbit-path orbit-path--two" aria-hidden="true" />
+    <figure className="orchestration-visual" aria-labelledby="orchestration-caption">
+      <div className="orchestration-canvas" role="img" aria-label="Núcleo tridimensional que organiza referências, skills e critérios em uma instrução clara">
+        <OrchestrationScene reducedMotion={Boolean(reducedMotion)} />
+        <div className="scene-grid" aria-hidden="true" />
+        {signals.map((signal, index) => (
+          <motion.div
+            className={`scene-signal ${signal.className}`}
+            key={signal.label}
+            initial={reducedMotion ? false : { opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.38, delay: 0.28 + index * 0.09, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={reducedMotion ? undefined : { y: -3 }}
+          >
+            <span>{signal.label}</span>
+            <strong>{signal.value}</strong>
+          </motion.div>
+        ))}
+        <div className="scene-output"><span>Saída revisada</span><strong>Prompt pronto para executar</strong></div>
       </div>
-      <div className="orbit-caption"><span>mova o cursor</span><strong>um processo, não uma lista</strong></div>
-    </div>
+      <figcaption id="orchestration-caption"><span>Arraste para explorar o núcleo</span><strong>Você mantém a decisão final.</strong></figcaption>
+    </figure>
   );
 }

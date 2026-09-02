@@ -4,21 +4,21 @@ Sistema visual único para a landing page, painel, conta e documentos do produto
 
 ## Genre
 
-Modern-minimal, profissional, direto e orientado a confiança.
+Atmosférico editorial na página de marketing; profissional, direto e orientado a confiança nas áreas operacionais.
 
 ## Macrostructure family
 
-- Marketing: Guided Orbit com modelo 3D do processo, comparação antes/depois, simulador ajustável, demonstração real, responsabilidade, preço e chamada final.
+- Marketing: núcleo espacial interativo com modelo WebGL do processo, comparação antes/depois, simulador ajustável, demonstração real, responsabilidade, preço e chamada final.
 - App: workbench responsivo com fluxo em três etapas e cards funcionais.
 - Conteúdo: leitura longa com título, resumo, texto e documentos relacionados.
 
 ## Theme
 
-Todos os valores ficam em `tokens.css`. O azul-cobalto é o único destaque principal. Estados de sucesso, alerta e erro têm uso semântico.
+Todos os valores ficam em `tokens.css`. O produto mantém azul-cobalto como destaque funcional; o hero usa violeta, ciano e verde-limão apenas dentro da cena espacial. Estados de sucesso, alerta e erro têm uso semântico.
 
 ## Typography
 
-- Display: Space Grotesk Variable, 680 a 720, normal.
+- Display: Fraunces Variable, 650 a 780, normal, inspirado na presença retro e luxuosa da Salty Ages sem redistribuir a fonte comercial.
 - Body: DM Sans Variable, 400 a 700.
 - Utility: IBM Plex Mono, 500 a 700.
 
@@ -28,7 +28,7 @@ Escala de 4 pontos. Inputs usam raio de 12 px, cards 16 px e painéis 24 px. Ele
 
 ## Motion
 
-Movimento discreto em transformação e opacidade. A preferência `prefers-reduced-motion` reduz transições para até 150 ms.
+GSAP coordena a entrada inicial; Framer Motion trata estados locais; Lenis suaviza a rolagem em dispositivos compatíveis. A cena WebGL responde diretamente ao ponteiro. A preferência `prefers-reduced-motion` remove movimento espacial e mantém apenas transições de opacidade de até 150 ms.
 
 ## Interaction
 
@@ -40,8 +40,8 @@ Botão primário preenchido em azul. Botão secundário transparente com borda. 
 
 ## Per-page allowances
 
-- Marketing pode usar gradiente CSS discreto e o console real do seletor.
-- A assinatura visual de marketing é o modelo 3D do processo. Ele reage ao cursor, usa apenas CSS e deve respeitar movimento reduzido.
+- Marketing pode usar dois focos de luz CSS discretos e o console real do seletor.
+- A assinatura visual de marketing é o núcleo 3D WebGL do processo. Ele reage ao cursor, possui fallback estático e deve respeitar movimento reduzido.
 - App não usa elementos decorativos sem função.
 - Conteúdo legal prioriza leitura e transparência.
 

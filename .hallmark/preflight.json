@@ -1,0 +1,13 @@
+{
+  "scope": "marketing hero",
+  "framework": "Next.js 16 / React 19",
+  "macrostructure": "immersive split hero with spatial orchestration core",
+  "typography": {
+    "display": "Fraunces Variable",
+    "body": "DM Sans Variable",
+    "note": "Salty Ages requires a separately licensed webfont file"
+  },
+  "palette": ["ink", "violet", "cyan", "lime", "coral"],
+  "motion": ["GSAP", "Lenis", "Framer Motion", "React Three Fiber"],
+  "constraints": ["reduced motion", "keyboard focus", "320px minimum", "no remote 3D assets"]
+}

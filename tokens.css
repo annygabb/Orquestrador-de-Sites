@@ -14,7 +14,7 @@
   --color-focus: oklch(62% 0.2 252);
   --color-accent-ink: oklch(99% 0.003 250);
 
-  --font-display: "Space Grotesk Variable", "Arial Narrow", sans-serif;
+  --font-display: "Fraunces Variable", "Iowan Old Style", serif;
   --font-body: "DM Sans Variable", "Segoe UI", sans-serif;
   --font-utility: "IBM Plex Mono", "Cascadia Code", monospace;
 
@@ -55,6 +55,16 @@
   --color-orbit-glow: oklch(70% 0.16 252 / 0.24);
   --color-orbit-shadow: oklch(22% 0.035 255 / 0.24);
   --color-qr-paper: oklch(100% 0 0);
+  --color-hero-paper: oklch(13% 0.032 286);
+  --color-hero-paper-raised: oklch(18% 0.048 286);
+  --color-hero-ink: oklch(96% 0.012 272);
+  --color-hero-muted: oklch(76% 0.034 275);
+  --color-hero-violet: oklch(68% 0.22 294);
+  --color-hero-cyan: oklch(84% 0.13 205);
+  --color-hero-lime: oklch(90% 0.2 120);
+  --color-hero-coral: oklch(74% 0.16 38);
+  --color-hero-rule: oklch(48% 0.07 283);
+  --color-hero-shadow: oklch(7% 0.025 284 / 0.56);
   --dur-micro: 120ms;
   --dur-long: 420ms;
   --ease-in: cubic-bezier(0.7, 0, 0.84, 0);

@@ -5,18 +5,30 @@ import Link from "next/link";
 import { MarketingSelectorDemo } from "@/app/components/marketing-selector-demo";
 import { OrchestrationOrbit } from "@/app/components/orchestration-orbit";
 import { TimeEstimator } from "@/app/components/time-estimator";
+import { MarketingMotion } from "@/app/components/marketing-motion";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const user = await currentUser();
-  return <><SiteHeader signedIn={Boolean(user)} /><main className="marketing-main">
-    <section className="marketing-hero marketing-hero--orbit" aria-labelledby="hero-title">
-      <div className="hero-copy"><p className="hero-context">Para quem cria sites com IA e quer parar de improvisar</p><h1 id="hero-title">Transforme referências soltas em um processo que a IA consegue executar.</h1><p className="hero-lead">O Orquestrador reúne skills, fontes e critérios em uma seleção clara. Você decide o objetivo, revisa o que será usado e chega ao chat com menos procura e mais direção.</p><div className="hero-actions"><Link className="button button--primary button--large" href={user ? "/painel" : "/entrar?intent=signup"}>{user ? "Abrir painel" : "Começar meu processo"}</Link><a className="button button--outline button--large" href="#experimente">Testar a seleção</a></div><div className="hero-contract"><span>Você decide</span><span>O sistema organiza</span><span>A IA recebe contexto</span></div></div>
-      <OrchestrationOrbit />
+  return <><MarketingMotion /><SiteHeader signedIn={Boolean(user)} /><main className="marketing-main">
+    <section className="marketing-hero marketing-hero--immersive" aria-labelledby="hero-title" data-marketing-hero>
+      <div className="hero-atmosphere" aria-hidden="true" />
+      <div className="hero-copy">
+        <p className="hero-context" data-hero-reveal><span aria-hidden="true" />Para quem cria sites com IA e quer parar de improvisar</p>
+        <h1 id="hero-title" data-hero-reveal>Suas referências viram um plano que a IA consegue executar.</h1>
+        <p className="hero-lead" data-hero-reveal>Escolha skills, fontes visuais e critérios de qualidade em um só lugar. O Orquestrador separa o que inspira do que realmente será executado e entrega ao chat uma direção revisada por você.</p>
+        <div className="hero-actions" data-hero-reveal><Link className="button button--primary button--large" href={user ? "/painel" : "/entrar?intent=signup"}>{user ? "Abrir painel" : "Organizar meu próximo site"}</Link><a className="button button--outline button--large" href="#experimente">Ver o seletor funcionando</a></div>
+        <ol className="hero-route" aria-label="Como o processo funciona" data-hero-reveal>
+          <li><span>Escolha</span><strong>o que o projeto precisa</strong></li>
+          <li><span>Revise</span><strong>skills e referências</strong></li>
+          <li><span>Envie</span><strong>uma direção clara à IA</strong></li>
+        </ol>
+      </div>
+      <div data-hero-reveal><OrchestrationOrbit /></div>
     </section>
 
-    <section className="sales-shift" id="como-funciona" aria-labelledby="shift-title"><div className="sales-shift__intro"><h2 id="shift-title">O problema não é falta de ferramenta. É começar sem um processo.</h2><p>Quando cada projeto exige procurar novamente fontes, lembrar boas práticas e reescrever instruções, o tempo some antes mesmo da construção começar.</p></div><div className="shift-compare"><article><span>Sem orquestração</span><ul><li>Links espalhados em abas e favoritos</li><li>Prompt muda conforme o que você lembrou</li><li>Referência externa confundida com instrução</li><li>Revisão acontece tarde, depois do retrabalho</li></ul></article><article><span>Com o Orquestrador</span><ul><li>Escolha orientada pelo objetivo do site</li><li>Skills e referências aparecem separadas</li><li>Seleção revisada antes de chegar à IA</li><li>Processo reaproveitável no próximo projeto</li></ul></article></div></section>
+    <section className="sales-shift" id="como-funciona" aria-labelledby="shift-title" data-motion-section><div className="sales-shift__intro"><h2 id="shift-title">O problema não é falta de ferramenta. É começar sem um processo.</h2><p>Quando cada projeto exige procurar novamente fontes, lembrar boas práticas e reescrever instruções, o tempo some antes mesmo da construção começar.</p></div><div className="shift-compare"><article><span>Sem orquestração</span><ul><li>Links espalhados em abas e favoritos</li><li>Prompt muda conforme o que você lembrou</li><li>Referência externa confundida com instrução</li><li>Revisão acontece tarde, depois do retrabalho</li></ul></article><article><span>Com o Orquestrador</span><ul><li>Escolha orientada pelo objetivo do site</li><li>Skills e referências aparecem separadas</li><li>Seleção revisada antes de chegar à IA</li><li>Processo reaproveitável no próximo projeto</li></ul></article></div></section>
 
     <section className="impact-section" id="impacto" aria-labelledby="impact-title"><div className="impact-copy"><h2 id="impact-title">Veja onde o tempo pode voltar para você.</h2><p>O simulador não inventa produtividade. Ajuste os três controles com a sua realidade e visualize a diferença entre procurar tudo do zero e trabalhar com uma seleção já organizada.</p></div><TimeEstimator /></section>
 

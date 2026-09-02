@@ -356,3 +356,104 @@ a { color: inherit; }
   .orbit-node strong { font-size: var(--text-sm); }
   .orbit-caption strong { font-size: var(--text-sm); }
 }
+
+/* Hallmark · component: immersive hero · genre: atmospheric-editorial · theme: custom
+ * states: default · hover · focus · active · disabled · loading · error · success
+ * motion: GSAP entrance · Framer Motion signals · Lenis scroll · WebGL direct manipulation
+ * contrast: pass (46–50) · reduced-motion: supported */
+.marketing-hero--immersive {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  margin-block-start: calc(var(--space-sm) * -1);
+  border-radius: clamp(var(--radius-card), 2.6vw, var(--radius-panel));
+  padding: clamp(var(--space-lg), 5vw, var(--space-2xl));
+  color: var(--color-hero-ink);
+  background: var(--color-hero-paper);
+  box-shadow: 0 var(--space-lg) var(--space-2xl) var(--color-hero-shadow);
+  overflow: clip;
+}
+.hero-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 76% 28%, color-mix(in oklch, var(--color-hero-violet) 27%, transparent), transparent 36%),
+    radial-gradient(circle at 18% 102%, color-mix(in oklch, var(--color-hero-lime) 12%, transparent), transparent 34%),
+    var(--color-hero-paper);
+  pointer-events: none;
+}
+.hero-atmosphere::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  opacity: .34;
+  background-image:
+    linear-gradient(color-mix(in oklch, var(--color-hero-rule) 22%, transparent) var(--rule-thin), transparent var(--rule-thin)),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-hero-rule) 22%, transparent) var(--rule-thin), transparent var(--rule-thin));
+  background-size: 4.5rem 4.5rem;
+  mask-image: linear-gradient(to bottom, transparent, var(--color-hero-paper) 35%, var(--color-hero-paper));
+}
+.marketing-hero--immersive .hero-copy { position: relative; z-index: var(--z-raised); }
+.marketing-hero--immersive .hero-context { display: flex; align-items: center; gap: var(--space-xs); max-width: 38rem; margin-block-end: var(--space-md); color: var(--color-hero-cyan); font: 700 var(--text-sm)/1.35 var(--font-body); }
+.marketing-hero--immersive .hero-context > span { width: .62rem; aspect-ratio: 1; border-radius: 50%; background: var(--color-hero-lime); box-shadow: 0 0 var(--space-sm) color-mix(in oklch, var(--color-hero-lime) 52%, transparent); }
+.marketing-hero--immersive .hero-copy h1 { max-width: 10.8ch; color: var(--color-hero-ink); font-family: var(--font-display); font-size: clamp(3rem, 6.3vw, 5.8rem); font-weight: 720; line-height: .94; letter-spacing: -.055em; }
+.marketing-hero--immersive .hero-lead { max-width: 55ch; color: var(--color-hero-muted); font-size: clamp(var(--text-md), 1.5vw, var(--text-lg)); }
+.marketing-hero--immersive .button--primary { border-color: var(--color-hero-lime); color: var(--color-hero-paper); background: var(--color-hero-lime); }
+.marketing-hero--immersive .button--outline { border-color: var(--color-hero-rule); color: var(--color-hero-ink); background: color-mix(in oklch, var(--color-hero-paper-raised) 74%, transparent); }
+.marketing-hero--immersive .button:focus-visible { outline-color: var(--color-hero-cyan); }
+.hero-route { display: grid; gap: 0; margin: var(--space-xl) 0 0; padding: 0; border-block: var(--rule-thin) solid var(--color-hero-rule); list-style: none; }
+.hero-route li { display: grid; gap: var(--space-3xs); padding-block: var(--space-sm); }
+.hero-route li + li { border-block-start: var(--rule-thin) solid var(--color-hero-rule); }
+.hero-route span { color: var(--color-hero-cyan); font: 700 var(--text-xs)/1 var(--font-utility); }
+.hero-route strong { color: var(--color-hero-ink); font-size: var(--text-sm); }
+
+.orchestration-visual { min-width: 0; margin: 0; }
+.orchestration-canvas { position: relative; min-height: clamp(29rem, 48vw, 39rem); border: var(--rule-thin) solid var(--color-hero-rule); border-radius: var(--radius-panel); overflow: clip; background: color-mix(in oklch, var(--color-hero-paper-raised) 78%, transparent); box-shadow: inset 0 0 var(--space-2xl) color-mix(in oklch, var(--color-hero-violet) 9%, transparent); }
+.orchestration-canvas canvas { position: relative; z-index: var(--z-base); touch-action: pan-y; }
+.scene-grid { position: absolute; inset: 0; z-index: 0; background-image: radial-gradient(circle, color-mix(in oklch, var(--color-hero-cyan) 24%, transparent) var(--rule-thin), transparent var(--rule-thin)); background-size: 1.65rem 1.65rem; mask-image: radial-gradient(circle at 50% 50%, var(--color-hero-paper), transparent 72%); pointer-events: none; }
+.scene-signal, .scene-output { position: absolute; z-index: var(--z-raised); display: grid; gap: var(--space-3xs); border: var(--rule-thin) solid var(--color-hero-rule); border-radius: var(--radius-card); padding: var(--space-xs) var(--space-sm); color: var(--color-hero-ink); background: color-mix(in oklch, var(--color-hero-paper-raised) 88%, transparent); backdrop-filter: blur(.75rem); pointer-events: none; }
+.scene-signal span, .scene-output span { font: 700 var(--text-xs)/1 var(--font-utility); }
+.scene-signal strong, .scene-output strong { font-size: var(--text-sm); }
+.scene-signal--violet { inset: 6% auto auto 5%; }
+.scene-signal--violet span { color: var(--color-hero-violet); }
+.scene-signal--cyan { inset: 13% 4% auto auto; }
+.scene-signal--cyan span { color: var(--color-hero-cyan); }
+.scene-signal--lime { inset: auto auto 18% 4%; }
+.scene-signal--lime span { color: var(--color-hero-lime); }
+.scene-output { inset: auto 4% 5% auto; border-color: var(--color-hero-coral); }
+.scene-output span { color: var(--color-hero-coral); }
+.orchestration-visual figcaption { display: flex; align-items: center; justify-content: space-between; gap: var(--space-xs); padding: var(--space-xs) var(--space-2xs) 0; color: var(--color-hero-muted); font-size: var(--text-xs); }
+.orchestration-visual figcaption strong { color: var(--color-hero-ink); }
+.orchestration-poster { position: absolute; inset: 15%; border: var(--rule-thin) solid var(--color-hero-rule); border-radius: 50%; transform: rotateX(62deg) rotateZ(-18deg); }
+.orchestration-poster span, .orchestration-poster i, .orchestration-poster b { position: absolute; inset: 50% auto auto 50%; display: block; border-radius: 50%; transform: translate(-50%, -50%); }
+.orchestration-poster span { width: 48%; aspect-ratio: 1; background: var(--color-hero-violet); }
+.orchestration-poster i { width: 66%; aspect-ratio: 1; border: var(--rule-thin) solid var(--color-hero-cyan); }
+.orchestration-poster b { width: 82%; aspect-ratio: 1; border: var(--rule-thin) solid var(--color-hero-lime); }
+
+@media (hover: hover) and (pointer: fine) {
+  .marketing-hero--immersive .button--primary:hover { color: var(--color-hero-paper); transform: translateY(-.0625rem); }
+  .marketing-hero--immersive .button--outline:hover { border-color: var(--color-hero-cyan); transform: translateY(-.0625rem); }
+}
+@media (min-width: 40rem) {
+  .hero-route { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .hero-route li { padding: var(--space-sm); }
+  .hero-route li + li { border-block-start: 0; border-inline-start: var(--rule-thin) solid var(--color-hero-rule); }
+}
+@media (min-width: 64rem) {
+  .marketing-hero--immersive { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); width: calc(100% + clamp(var(--space-sm), 4vw, var(--space-xl))); margin-inline-start: calc(clamp(var(--space-sm), 4vw, var(--space-xl)) * -.5); }
+}
+@media (max-width: 39.99rem) {
+  .marketing-hero--immersive .hero-copy h1 { font-size: clamp(2.75rem, 13vw, 4rem); }
+  .orchestration-canvas { min-height: 28rem; }
+  .scene-signal, .scene-output { padding: var(--space-2xs) var(--space-xs); }
+  .scene-signal strong, .scene-output strong { font-size: var(--text-xs); }
+  .scene-signal--cyan { inset-block-start: 9%; }
+  .scene-signal--lime { inset-block-end: 20%; }
+  .orchestration-visual figcaption span { display: none; }
+  .orchestration-visual figcaption { justify-content: flex-end; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marketing-hero--immersive [data-hero-reveal], [data-motion-section] > * { opacity: 1 !important; transform: none !important; }
+  .orchestration-canvas canvas { pointer-events: none; }
+}

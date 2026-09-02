@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "@fontsource-variable/dm-sans";
-import "@fontsource-variable/space-grotesk";
+import "@fontsource-variable/fraunces";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@fontsource/ibm-plex-mono/700.css";
 import { headers } from "next/headers";
