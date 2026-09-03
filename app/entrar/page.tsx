@@ -1,10 +1,8 @@
 import { signInWithGoogle } from "@/app/actions/auth";
-import { SiteHeader } from "@/app/components/site-header";
 import { currentUser } from "@/lib/entitlements";
 import { hasSupabaseConfig } from "@/lib/supabase/config";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { MovingBorderButton } from "@/components/ui/moving-border";
+import { AuthPage } from "@/components/ui/auth-page";
 
 export const metadata = { title: "Entrar · Orquestrador de Sites", description: "Entre com Google para acessar o Orquestrador de Sites." };
 
@@ -14,5 +12,5 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const { erro, intent } = await searchParams;
   const creating = intent === "signup";
   const configured = hasSupabaseConfig();
-  return <><SiteHeader /><main className="auth-page auth-page--focused"><section className="auth-card auth-card--focused"><Link className="auth-logo" href="/" aria-label="Voltar para a página inicial"><span aria-hidden="true">OS</span><strong>Orquestrador</strong></Link><div className="auth-focused__intro"><p className="auth-kicker">UM PROCESSO. TODOS OS SEUS SITES.</p><h1>{creating ? "Crie sua conta" : "Que bom ter você de volta"}</h1><p>{creating ? "Entre com o Google e comece a organizar seu próximo projeto." : "Continue de onde parou com a mesma conta Google."}</p></div><div className="auth-action auth-action--focused"><form action={signInWithGoogle}><MovingBorderButton type="submit" disabled={!configured} containerClassName="auth-google-border" className="auth-google-button"><span className="google-mark" aria-hidden="true">G</span>{creating ? "Criar conta com Google" : "Entrar com Google"}</MovingBorderButton></form>{!configured && <p className="auth-setup" role="alert">O acesso está sendo preparado. Conecte o Supabase para liberar o teste.</p>}{erro && <p role="alert">Não foi possível concluir o login. Confira os callbacks do Google e tente novamente.</p>}<div className="auth-switch"><span>{creating ? "Já tem uma conta?" : "Ainda não tem uma conta?"}</span><Link href={creating ? "/entrar" : "/entrar?intent=signup"}>{creating ? "Entrar" : "Criar conta"}</Link></div><small>Ao continuar, você concorda com os <Link href="/termos">Termos de uso</Link> e a <Link href="/privacidade">Política de privacidade</Link>.</small></div></section></main></>;
+  return <AuthPage creating={creating} configured={configured} error={erro} action={signInWithGoogle} />;
 }

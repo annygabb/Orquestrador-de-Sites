@@ -44,13 +44,14 @@ test("movimento e layout respeitam acessibilidade e telas pequenas", async () =>
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
-test("preloader 3D apresenta etapas e a política de frames não inclui a referência removida", async () => {
+test("preloader de caminhos apresenta etapas e a política de frames não inclui a referência removida", async () => {
   const [preloader, proxy] = await Promise.all([
     read("../app/components/page-preloader.tsx"),
     read("../proxy.ts"),
   ]);
   assert.match(preloader, /4400/);
-  assert.match(preloader, /GlobeStudy/);
+  assert.match(preloader, /FloatingPaths/);
+  assert.match(preloader, /preloader-orbit/);
   assert.match(preloader, /Organizando critérios/);
   assert.doesNotMatch(proxy, /behance/i);
 });
@@ -80,15 +81,27 @@ test("mapa visual muda por etapa e Open Graph acompanha a nova promessa", async 
   assert.match(og, /uma direção/);
 });
 
-test("login focado força uma coluna e evita a sobreposição no desktop", async () => {
-  const [styles, login] = await Promise.all([
+test("login usa o componente dividido e preserva somente a autenticação real", async () => {
+  const [styles, login, auth] = await Promise.all([
     read("../app/marketing.css"),
     read("../app/entrar/page.tsx"),
+    read("../components/ui/auth-page.tsx"),
   ]);
-  assert.match(styles, /\.auth-card\.auth-card--focused[^}]+grid-template-columns: minmax\(0, 1fr\)/);
-  assert.match(styles, /\.auth-card--focused > \*[^}]+grid-column: 1 \/ -1/);
-  assert.match(login, /MovingBorderButton/);
+  assert.match(styles, /\.auth-shell[^}]+grid-template-columns: minmax\(0, 1\.08fr\) minmax\(28rem, \.92fr\)/);
+  assert.match(styles, /@media \(max-width: 55\.99rem\)[^]+\.auth-showcase \{ display: none/);
+  assert.match(login, /<AuthPage/);
+  assert.match(auth, /FloatingPaths/);
+  assert.match(auth, /Criar conta com Google/);
+  assert.doesNotMatch(auth, /AppleIcon|GithubIcon|Continue with Email/);
   assert.doesNotMatch(login, /Sessão protegida por cookie seguro/);
+});
+
+test("preço comunica evolução do repertório em vez de avisos operacionais", async () => {
+  const page = await read("../app/page.tsx");
+  assert.match(page, /Adicione novas skills sempre/);
+  assert.match(page, /itens personalizados/);
+  assert.doesNotMatch(page, /Avisos sobre cadastro, pagamento e acesso/);
+  assert.doesNotMatch(page, /Perfil com valor, vencimento e cancelamento/);
 });
 
 test("estrutura shadcn, Tailwind e componentes de movimento estão integrados", async () => {
@@ -102,6 +115,7 @@ test("estrutura shadcn, Tailwind e componentes de movimento estão integrados", 
   assert.match(components, /@\/components\/ui/);
   assert.match(shader, /MeshGradient/);
   assert.match(shader, /aria-pressed/);
+  assert.doesNotMatch(shader, /Mova o cursor e altere as camadas/);
   assert.match(border, /useAnimationFrame/);
   assert.match(border, /useReducedMotion/);
 });

@@ -7,6 +7,7 @@ test("landing carrega o visual, tema e console interativo", async ({ page }) => 
   await expect(page.locator(".shader-visual")).toBeVisible();
   await expect(page.getByRole("button", { name: "Interface" })).toBeVisible();
   await expect(page.locator(".process-map")).toBeVisible();
+  await expect(page.locator(".process-map__plane")).toHaveCount(2);
   await expect(page.locator(".process-core")).toContainText("Entrada dispersa");
   await expect(page.locator("body")).not.toContainText("Sem nota fiscal automatizada nesta versão");
   await expect(page.locator(".product-console")).toBeVisible();
@@ -35,6 +36,7 @@ test("rotas privadas redirecionam e páginas legais funcionam", async ({ page })
   await page.goto("/entrar?intent=signup");
   await expect(page.getByRole("heading", { name: "Crie sua conta" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Criar conta com Google" })).toBeVisible();
+  await expect(page.getByText("Entre com referências.")).toBeVisible();
 });
 
 test("headers de segurança são enviados", async ({ request }) => {

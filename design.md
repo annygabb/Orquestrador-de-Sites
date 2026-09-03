@@ -8,7 +8,7 @@ Editorial direto na página de marketing, com azul-cobalto, azul-marinho e off-w
 
 ## Macrostructure family
 
-- Marketing: Shader-led Product Transformation Story com hero horizontal azul-marinho reativo ao cursor, mapa orbital de processo no scrollytelling das skills, simulação antes/depois em vidro luminoso, demonstração real, motivo para assinar, preço e chamada final.
+- Marketing: Split-path Product Journey com texto e console lado a lado no desktop, mapa orbital 3D no scrollytelling das skills, simulação antes/depois em vidro luminoso, demonstração real, motivo para assinar, preço e chamada final.
 - App: workbench responsivo com fluxo em três etapas e cards funcionais.
 - Conteúdo: leitura longa com título, resumo, texto e documentos relacionados.
 
@@ -28,7 +28,7 @@ Escala de 4 pontos. Inputs usam raio de 12 px, cards 16 px e painéis 24 px. Ele
 
 ## Motion
 
-GSAP coordena entrada, desenho de linha, gráficos e scrollytelling; Framer Motion transforma a interface dentro do celular, movimenta as bordas das ações e permite rotação direta por cursor ou arraste; Lenis suaviza a rolagem em dispositivos compatíveis. O shader reage ao cursor e o preloader com globo 3D dura menos de um segundo. `prefers-reduced-motion` remove movimento espacial e preserva o conteúdo estático.
+GSAP coordena entrada, desenho de linha, gráficos, foco das etapas e pulsos do mapa; Framer Motion desenha os caminhos do login e do preloader e permite inclinar o mapa orbital pelo cursor; Lenis suaviza a rolagem em dispositivos compatíveis. O shader reage ao cursor e o preloader apresenta quatro decisões em 4,4 segundos. `prefers-reduced-motion` reduz a abertura a uma transição curta e preserva o conteúdo estático.
 
 ## Interaction
 

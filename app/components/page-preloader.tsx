@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import GlobeStudy from "@/components/ui/globe-study";
+import { FloatingPaths } from "@/components/ui/auth-page";
 
 const loadingSteps = ["Lendo o objetivo", "Conectando referências", "Organizando critérios", "Direção pronta"];
 
@@ -28,10 +28,15 @@ export function PagePreloader() {
     <div className={`page-preloader${leaving ? " is-leaving" : ""}`} role="status" aria-label="Preparando a experiência">
       <div className="preloader-panel preloader-panel--left" aria-hidden="true" />
       <div className="preloader-panel preloader-panel--right" aria-hidden="true" />
-      <header className="preloader-head"><strong>ORQUESTRADOR</strong><span>PREPARANDO DIREÇÃO</span></header>
-      <GlobeStudy className="preloader-world" label="Globo de skills e referências em movimento" />
+      <FloatingPaths position={1} className="preloader-paths" />
+      <FloatingPaths position={-1} className="preloader-paths preloader-paths--reverse" />
+      <header className="preloader-head"><strong><i aria-hidden="true">OS</i> ORQUESTRADOR</strong><span>0{step + 1} / 04</span></header>
+      <div className="preloader-experience">
+        <div className="preloader-orbit" aria-hidden="true"><span>REFERÊNCIAS</span><span>SKILLS</span><span>CRITÉRIOS</span></div>
+        <p>DE REFERÊNCIAS SOLTAS</p>
+        <h2>A uma direção<br/><span>pronta para a IA.</span></h2>
+      </div>
       <div className="preloader-content">
-        <div className="preloader-count" aria-hidden="true">0{step + 1}</div>
         <p key={loadingSteps[step]}>{loadingSteps[step]}</p>
         <div className="preloader-line" aria-hidden="true"><span /></div>
       </div>

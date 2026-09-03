@@ -71,7 +71,6 @@ export function ShaderHero() {
           ))}
         </div>
       </motion.div>
-      <p className="shader-visual__hint">Mova o cursor e altere as camadas</p>
     </div>
   );
 }
