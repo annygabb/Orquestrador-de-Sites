@@ -4,6 +4,8 @@ test("landing carrega o visual, tema e console interativo", async ({ page }) => 
   await page.goto("/");
   await expect(page).toHaveTitle(/Orquestrador de Sites/);
   await expect(page.locator("h1")).toContainText("Menos procura");
+  await expect(page.locator(".shader-visual")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Interface" })).toBeVisible();
   await expect(page.locator(".phone-scene").first()).toBeVisible();
   await expect(page.locator(".phone-scene").first()).not.toHaveCSS("perspective", "none");
   await expect(page.locator(".phone-device").first()).not.toHaveCSS("transform-style", "flat");
@@ -32,8 +34,8 @@ test("rotas privadas redirecionam e páginas legais funcionam", async ({ page })
   await page.goto("/privacidade");
   await expect(page.getByRole("heading", { name: "Política de privacidade" })).toBeVisible();
   await page.goto("/entrar?intent=signup");
-  await expect(page.getByRole("heading", { name: "Entre ou crie sua conta" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Continuar com Google" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Crie sua conta" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Criar conta com Google" })).toBeVisible();
 });
 
 test("headers de segurança são enviados", async ({ request }) => {
