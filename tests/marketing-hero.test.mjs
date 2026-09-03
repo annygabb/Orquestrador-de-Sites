@@ -12,6 +12,8 @@ test("hero comunica a transformação principal e oferece dois caminhos claros",
   assert.match(page, /Ver a transformação/);
   assert.doesNotMatch(page, /behance/i);
   assert.match(page, /demand-group[^]*aria-hidden="true"/);
+  assert.match(page, /<ShaderHero/);
+  assert.doesNotMatch(page, /<PhoneStory compact/);
 });
 
 test("experiência combina celular 3D, GSAP, Framer Motion e Lenis", async () => {
@@ -44,12 +46,13 @@ test("movimento e layout respeitam acessibilidade e telas pequenas", async () =>
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
-test("preloader é curto e a política de frames não inclui a referência removida", async () => {
+test("preloader 3D é curto e a política de frames não inclui a referência removida", async () => {
   const [preloader, proxy] = await Promise.all([
     read("../app/components/page-preloader.tsx"),
     read("../proxy.ts"),
   ]);
-  assert.match(preloader, /720/);
+  assert.match(preloader, /820/);
+  assert.match(preloader, /DotGlobeHero/);
   assert.doesNotMatch(proxy, /behance/i);
 });
 
@@ -80,7 +83,27 @@ test("celular usa recorte transparente, texturas por etapa e Open Graph próprio
 });
 
 test("login focado força uma coluna e evita a sobreposição no desktop", async () => {
-  const styles = await read("../app/marketing.css");
+  const [styles, login] = await Promise.all([
+    read("../app/marketing.css"),
+    read("../app/entrar/page.tsx"),
+  ]);
   assert.match(styles, /\.auth-card\.auth-card--focused[^}]+grid-template-columns: minmax\(0, 1fr\)/);
   assert.match(styles, /\.auth-card--focused > \*[^}]+grid-column: 1 \/ -1/);
+  assert.match(login, /MovingBorderButton/);
+  assert.doesNotMatch(login, /Sessão protegida por cookie seguro/);
+});
+
+test("estrutura shadcn, Tailwind e componentes de movimento estão integrados", async () => {
+  const [globals, components, shader, border] = await Promise.all([
+    read("../app/globals.css"),
+    read("../components.json"),
+    read("../components/ui/shader-hero.tsx"),
+    read("../components/ui/moving-border.tsx"),
+  ]);
+  assert.match(globals, /tailwindcss\/utilities\.css/);
+  assert.match(components, /@\/components\/ui/);
+  assert.match(shader, /MeshGradient/);
+  assert.match(shader, /aria-pressed/);
+  assert.match(border, /useAnimationFrame/);
+  assert.match(border, /useReducedMotion/);
 });

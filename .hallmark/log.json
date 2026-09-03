@@ -1,5 +1,14 @@
 [
   {
+    "date": "2026-09-03",
+    "macrostructure": "Shader-led Product Transformation Story",
+    "theme": "custom",
+    "theme_axes": "light-dark / editorial-technical / cobalt-navy",
+    "enrichment": "cursor-reactive mesh shader, moving-border actions, 3D globe preloader, draggable phone scrollytelling and focused Google auth",
+    "brief": "Página de vendas azul com direção visual reativa e autenticação sem sobreposição",
+    "scope": "marketing-auth-preloader"
+  },
+  {
     "date": "2026-09-02",
     "macrostructure": "Product Transformation Story",
     "theme": "custom",

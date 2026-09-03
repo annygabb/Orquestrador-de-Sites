@@ -7,6 +7,8 @@ import { TimeEstimator } from "@/app/components/time-estimator";
 import { MarketingMotion } from "@/app/components/marketing-motion";
 import { PagePreloader } from "@/app/components/page-preloader";
 import { PhoneStory } from "@/app/components/phone-story";
+import { ShaderHero } from "@/components/ui/shader-hero";
+import { MovingBorderButton } from "@/components/ui/moving-border";
 
 export const dynamic = "force-dynamic";
 
@@ -25,12 +27,12 @@ export default async function HomePage() {
           <h1 id="hero-title" data-hero-reveal>Menos procura. <mark>Mais direção</mark> para construir.</h1>
           <p className="sales-hero__lead" data-hero-reveal>O Orquestrador reúne skills, referências e critérios em um processo que você revisa antes de enviar para a IA.</p>
           <div className="sales-hero__actions" data-hero-reveal>
-            <Link className="button sales-button--primary" href={accountLink}>{user ? "Abrir meu painel" : "Organizar meu próximo site"}<span aria-hidden="true">↗</span></Link>
-            <a className="button sales-button--secondary" href="#como-funciona">Ver a transformação</a>
+            <MovingBorderButton as="a" href={accountLink} containerClassName="moving-cta" className="moving-cta__inside moving-cta__inside--primary">{user ? "Abrir meu painel" : "Organizar meu próximo site"}<span aria-hidden="true">↗</span></MovingBorderButton>
+            <MovingBorderButton as="a" href="#como-funciona" containerClassName="moving-cta" className="moving-cta__inside moving-cta__inside--secondary">Ver a transformação</MovingBorderButton>
           </div>
           <ul className="sales-proofline" data-hero-reveal><li>Você escolhe</li><li>O sistema organiza</li><li>A IA executa com contexto</li></ul>
         </div>
-        <div className="sales-hero__visual" data-hero-reveal><PhoneStory compact /></div>
+        <div className="sales-hero__visual" data-hero-reveal><ShaderHero /></div>
         <svg className="hero-draw-line" viewBox="0 0 900 120" fill="none" aria-hidden="true"><path d="M4 97C163 3 270 118 424 53C576-12 677 104 896 17" pathLength="1" /></svg>
       </section>
 
@@ -76,10 +78,10 @@ export default async function HomePage() {
 
       <section className="pricing-section sales-pricing" id="plano" aria-labelledby="pricing-title">
         <div className="pricing-copy" data-reveal><p className="sales-section-label">UM COMEÇO COMPLETO</p><h2 id="pricing-title">Organize o processo agora. Continue por menos depois.</h2><span>A ativação inclui 30 dias para montar, testar e usar o fluxo completo. Depois, você decide se quer manter o acesso.</span></div>
-        <article className="pricing-card" data-reveal><div className="price-first"><span>Ativação + 30 dias</span><strong>{moneyFromCents(ACTIVATION_PRICE_CENTS)}</strong><small>pagamento inicial</small></div><div className="price-renewal"><span>Depois</span><strong>{moneyFromCents(RENEWAL_PRICE_CENTS)}<em>/mês</em></strong><small>cancelável pelo perfil</small></div><ul><li>Painel de skills e referências</li><li>Uso no site e em clientes compatíveis com MCP</li><li>Perfil com valor, vencimento e cancelamento</li><li>Avisos sobre cadastro, pagamento e acesso</li></ul><Link className="button sales-button--primary" href={user ? "/pagamento" : "/entrar?intent=signup"}>{user ? "Ativar acesso" : "Criar minha conta"}<span aria-hidden="true">↗</span></Link></article>
+        <article className="pricing-card" data-reveal><div className="price-first"><span>Ativação + 30 dias</span><strong>{moneyFromCents(ACTIVATION_PRICE_CENTS)}</strong><small>pagamento inicial</small></div><div className="price-renewal"><span>Depois</span><strong>{moneyFromCents(RENEWAL_PRICE_CENTS)}<em>/mês</em></strong><small>cancelável pelo perfil</small></div><ul><li>Painel de skills e referências</li><li>Uso no site e em clientes compatíveis com MCP</li><li>Perfil com valor, vencimento e cancelamento</li><li>Avisos sobre cadastro, pagamento e acesso</li></ul><MovingBorderButton as="a" href={user ? "/pagamento" : "/entrar?intent=signup"} containerClassName="moving-cta moving-cta--wide" className="moving-cta__inside moving-cta__inside--primary">{user ? "Ativar acesso" : "Criar minha conta"}<span aria-hidden="true">↗</span></MovingBorderButton></article>
       </section>
 
-      <section className="sales-final" data-reveal><p>Seu próximo site não precisa começar em vinte abas.</p><h2>Comece com uma direção.</h2><Link className="button sales-button--primary" href={accountLink}>{user ? "Abrir painel" : "Criar conta"}<span aria-hidden="true">↗</span></Link></section>
+      <section className="sales-final" data-reveal><p>Seu próximo site não precisa começar em vinte abas.</p><h2>Comece com uma direção.</h2><MovingBorderButton as="a" href={accountLink} containerClassName="moving-cta" className="moving-cta__inside moving-cta__inside--primary">{user ? "Abrir painel" : "Criar conta"}<span aria-hidden="true">↗</span></MovingBorderButton></section>
     </main>
     <footer className="site-footer"><p>Seu próximo site começa com decisões mais claras.</p><div><strong>Orquestrador de Sites</strong><span>© 2026, Anny Gabrielly</span><nav aria-label="Links do rodapé"><Link href="/privacidade">Privacidade</Link><Link href="/termos">Termos</Link><Link href="/reembolso">Reembolso</Link><Link href="/cookies">Cookies</Link><a href="https://github.com/annygabb/Orquestrador-de-Sites" target="_blank" rel="noopener noreferrer">GitHub</a></nav></div></footer>
   </>;
