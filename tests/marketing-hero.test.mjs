@@ -6,8 +6,8 @@ const read = (path) => readFile(new URL(path, import.meta.url), "utf8");
 
 test("hero comunica a transformação principal e oferece dois caminhos claros", async () => {
   const page = await read("../app/page.tsx");
-  assert.match(page, /Menos procura\./);
-  assert.match(page, /Mais direção/);
+  assert.match(page, /Transforme referências soltas/);
+  assert.match(page, /direção que a IA entende/);
   assert.match(page, /Organizar meu próximo site/);
   assert.match(page, /Ver a transformação/);
   assert.doesNotMatch(page, /behance/i);
@@ -16,43 +16,42 @@ test("hero comunica a transformação principal e oferece dois caminhos claros",
   assert.doesNotMatch(page, /<PhoneStory compact/);
 });
 
-test("experiência combina celular 3D, GSAP, Framer Motion e Lenis", async () => {
-  const [phone, motion] = await Promise.all([
-    read("../app/components/phone-story.tsx"),
+test("experiência combina mapa de processo, GSAP, Framer Motion e Lenis", async () => {
+  const [process, motion] = await Promise.all([
+    read("../app/components/process-story.tsx"),
     read("../app/components/marketing-motion.tsx"),
   ]);
 
-  assert.match(phone, /orquestrador-phone\.webp/);
-  assert.match(phone, /from "framer-motion"/);
-  assert.match(phone, /ScrollTrigger/);
-  assert.match(phone, /dragSnapToOrigin/);
-  assert.match(phone, /aria-current/);
-  assert.doesNotMatch(phone, /skill-chip/);
-  assert.doesNotMatch(phone, /\/04/);
+  assert.match(process, /from "framer-motion"/);
+  assert.match(process, /ScrollTrigger/);
+  assert.match(process, /process-map/);
+  assert.match(process, /aria-current/);
+  assert.doesNotMatch(process, /orquestrador-phone/);
   assert.match(motion, /import\("gsap"\)/);
   assert.match(motion, /import\("lenis"\)/);
 });
 
 test("movimento e layout respeitam acessibilidade e telas pequenas", async () => {
-  const [phone, motion, styles] = await Promise.all([
-    read("../app/components/phone-story.tsx"),
+  const [process, motion, styles] = await Promise.all([
+    read("../app/components/process-story.tsx"),
     read("../app/components/marketing-motion.tsx"),
     read("../app/marketing.css"),
   ]);
 
-  assert.match(phone, /useReducedMotion/);
+  assert.match(process, /useReducedMotion/);
   assert.match(motion, /prefers-reduced-motion: reduce/);
   assert.match(styles, /@media \(min-width: 40rem\)/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
-test("preloader 3D é curto e a política de frames não inclui a referência removida", async () => {
+test("preloader 3D apresenta etapas e a política de frames não inclui a referência removida", async () => {
   const [preloader, proxy] = await Promise.all([
     read("../app/components/page-preloader.tsx"),
     read("../proxy.ts"),
   ]);
-  assert.match(preloader, /820/);
-  assert.match(preloader, /DotGlobeHero/);
+  assert.match(preloader, /4400/);
+  assert.match(preloader, /GlobeStudy/);
+  assert.match(preloader, /Organizando critérios/);
   assert.doesNotMatch(proxy, /behance/i);
 });
 
@@ -67,19 +66,18 @@ test("faixa de capacidades repete continuamente sem depender da rolagem", async 
   assert.doesNotMatch(motion, /demand-strip/);
 });
 
-test("celular usa recorte transparente, texturas por etapa e Open Graph próprio", async () => {
-  const [phone, styles, layout, og] = await Promise.all([
-    read("../app/components/phone-story.tsx"),
+test("mapa visual muda por etapa e Open Graph acompanha a nova promessa", async () => {
+  const [process, styles, layout, og] = await Promise.all([
+    read("../app/components/process-story.tsx"),
     read("../app/marketing.css"),
     read("../app/layout.tsx"),
     read("../app/opengraph-image.tsx"),
   ]);
-  assert.match(phone, /orquestrador-phone\.webp/);
-  assert.match(phone, /--pointer-x/);
-  assert.match(styles, /data-phone-stage="3"/);
-  assert.match(styles, /phone-texture/);
+  assert.match(process, /process-progress/);
+  assert.match(process, /Pronto para executar/);
+  assert.match(styles, /process-story__steps article\.is-active/);
   assert.match(layout, /summary_large_image/);
-  assert.match(og, /Menos procura/);
+  assert.match(og, /uma direção/);
 });
 
 test("login focado força uma coluna e evita a sobreposição no desktop", async () => {

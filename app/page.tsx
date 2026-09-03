@@ -6,7 +6,7 @@ import { MarketingSelectorDemo } from "@/app/components/marketing-selector-demo"
 import { TimeEstimator } from "@/app/components/time-estimator";
 import { MarketingMotion } from "@/app/components/marketing-motion";
 import { PagePreloader } from "@/app/components/page-preloader";
-import { PhoneStory } from "@/app/components/phone-story";
+import { ProcessStory } from "@/app/components/process-story";
 import { ShaderHero } from "@/components/ui/shader-hero";
 import { MovingBorderButton } from "@/components/ui/moving-border";
 
@@ -22,17 +22,17 @@ export default async function HomePage() {
     <SiteHeader signedIn={Boolean(user)} />
     <main className="sales-page">
       <section className="sales-hero" aria-labelledby="hero-title" data-marketing-hero>
+        <div className="sales-hero__visual" data-hero-reveal><ShaderHero /></div>
         <div className="sales-hero__copy">
-          <p className="sales-eyebrow" data-hero-reveal><span>Para quem cria sites com IA</span> e não quer mais improvisar.</p>
-          <h1 id="hero-title" data-hero-reveal>Menos procura. <mark>Mais direção</mark> para construir.</h1>
-          <p className="sales-hero__lead" data-hero-reveal>O Orquestrador reúne skills, referências e critérios em um processo que você revisa antes de enviar para a IA.</p>
+          <p className="sales-eyebrow" data-hero-reveal><span>PARA QUEM CRIA SITES COM IA</span><b>Sem improviso entre o briefing e o prompt.</b></p>
+          <h1 id="hero-title" data-hero-reveal>Transforme referências soltas em uma direção que a IA entende.</h1>
+          <p className="sales-hero__lead" data-hero-reveal>Escolha as skills, confirme os critérios e entregue para a IA um plano revisado — sem perder horas abrindo abas ou refazendo decisões.</p>
           <div className="sales-hero__actions" data-hero-reveal>
             <MovingBorderButton as="a" href={accountLink} containerClassName="moving-cta" className="moving-cta__inside moving-cta__inside--primary">{user ? "Abrir meu painel" : "Organizar meu próximo site"}<span aria-hidden="true">↗</span></MovingBorderButton>
             <MovingBorderButton as="a" href="#como-funciona" containerClassName="moving-cta" className="moving-cta__inside moving-cta__inside--secondary">Ver a transformação</MovingBorderButton>
           </div>
           <ul className="sales-proofline" data-hero-reveal><li>Você escolhe</li><li>O sistema organiza</li><li>A IA executa com contexto</li></ul>
         </div>
-        <div className="sales-hero__visual" data-hero-reveal><ShaderHero /></div>
         <svg className="hero-draw-line" viewBox="0 0 900 120" fill="none" aria-hidden="true"><path d="M4 97C163 3 270 118 424 53C576-12 677 104 896 17" pathLength="1" /></svg>
       </section>
 
@@ -43,7 +43,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <PhoneStory />
+      <ProcessStory />
 
       <section className="results-lab" id="impacto" aria-labelledby="results-title">
         <header data-reveal><p>Impacto que você consegue medir</p><h2 id="results-title">Troque horas procurando por decisões que avançam o projeto.</h2><span>Use seus próprios números. O simulador mostra uma possibilidade de economia de tempo, não uma promessa de resultado.</span></header>

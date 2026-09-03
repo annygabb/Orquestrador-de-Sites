@@ -1,6 +1,15 @@
 [
   {
     "date": "2026-09-03",
+    "macrostructure": "Horizontal Shader Thesis",
+    "theme": "custom",
+    "theme_axes": "dark-stage / editorial-technical / cobalt-navy",
+    "enrichment": "staged globe preloader, full-bleed reactive shader and orbital process map",
+    "brief": "Hero mais claro e experiência de carregamento com transformação visível",
+    "scope": "marketing-hero-process-preloader"
+  },
+  {
+    "date": "2026-09-03",
     "macrostructure": "Shader-led Product Transformation Story",
     "theme": "custom",
     "theme_axes": "light-dark / editorial-technical / cobalt-navy",

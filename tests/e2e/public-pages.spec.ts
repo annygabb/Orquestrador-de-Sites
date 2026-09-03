@@ -3,16 +3,15 @@ import { expect, test } from "@playwright/test";
 test("landing carrega o visual, tema e console interativo", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle(/Orquestrador de Sites/);
-  await expect(page.locator("h1")).toContainText("Menos procura");
+  await expect(page.locator("h1")).toContainText("Transforme referências soltas");
   await expect(page.locator(".shader-visual")).toBeVisible();
   await expect(page.getByRole("button", { name: "Interface" })).toBeVisible();
-  await expect(page.locator(".phone-scene").first()).toBeVisible();
-  await expect(page.locator(".phone-scene").first()).not.toHaveCSS("perspective", "none");
-  await expect(page.locator(".phone-device").first()).not.toHaveCSS("transform-style", "flat");
+  await expect(page.locator(".process-map")).toBeVisible();
+  await expect(page.locator(".process-core")).toContainText("Entrada dispersa");
   await expect(page.locator("body")).not.toContainText("Sem nota fiscal automatizada nesta versão");
   await expect(page.locator(".product-console")).toBeVisible();
   await expect(page.locator("body")).toHaveCSS("font-family", /DM Sans/);
-  await expect(page.locator(".sales-hero")).toHaveCSS("display", "grid");
+  await expect(page.locator(".sales-hero")).toHaveCSS("display", "block");
   const titleSize = await page.locator("h1").evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize));
   const consoleStyle = await page.locator(".product-console").evaluate((element) => {
     const style = getComputedStyle(element);

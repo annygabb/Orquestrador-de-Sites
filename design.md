@@ -8,7 +8,7 @@ Editorial direto na página de marketing, com azul-cobalto, azul-marinho e off-w
 
 ## Macrostructure family
 
-- Marketing: Shader-led Product Transformation Story com hero azul-marinho reativo ao cursor, celular transparente em perspectiva, scrollytelling das skills, simulação antes/depois em vidro luminoso, demonstração real, motivo para assinar, preço e chamada final.
+- Marketing: Shader-led Product Transformation Story com hero horizontal azul-marinho reativo ao cursor, mapa orbital de processo no scrollytelling das skills, simulação antes/depois em vidro luminoso, demonstração real, motivo para assinar, preço e chamada final.
 - App: workbench responsivo com fluxo em três etapas e cards funcionais.
 - Conteúdo: leitura longa com título, resumo, texto e documentos relacionados.
 
@@ -41,7 +41,7 @@ Botão primário preenchido em azul. Botão secundário transparente com borda. 
 ## Per-page allowances
 
 - Marketing pode usar dois focos de luz CSS discretos, linha autodesenhada, gráfico simulado e o console real do seletor.
-- A assinatura visual de marketing combina o shader responsivo no primeiro contato com o celular em perspectiva que evolui com cada grupo de skills durante a rolagem.
+- A assinatura visual de marketing combina o shader em toda a abertura com um mapa orbital que ganha direção a cada grupo de skills durante a rolagem.
 - App não usa elementos decorativos sem função.
 - Conteúdo legal prioriza leitura e transparência.
 
