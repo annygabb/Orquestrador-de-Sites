@@ -1,25 +1,32 @@
 import type { Metadata } from "next";
 import "@fontsource-variable/dm-sans";
-import "@fontsource-variable/space-grotesk";
+import "@fontsource-variable/fraunces";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@fontsource/ibm-plex-mono/700.css";
-import { baseURL } from "@/baseUrl";
+import { headers } from "next/headers";
 import "./globals.css";
 import "../tokens.css";
 import "./panel.css";
+import "./marketing.css";
+import { CookieConsent } from "@/app/components/cookie-consent";
 
 export const metadata: Metadata = {
-  title: "Orquestrador de Sites",
-  description: "Selecione e confirme as skills usadas no seu projeto.",
+  metadataBase: new URL(process.env.APP_ORIGIN || "https://orquestradordesites.vercel.app"),
+  title: { default: "Orquestrador de Sites", template: "%s · Orquestrador de Sites" },
+  description: "Escolha skills e referências, confirme o processo e aplique ao seu projeto de site com IA.",
+  openGraph: { title: "Orquestrador de Sites", description: "Um processo claro para escolher e aplicar skills em projetos de sites com IA.", type: "website", locale: "pt_BR", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Orquestrador de Sites — menos procura e mais direção" }] },
+  twitter: { card: "summary_large_image", title: "Orquestrador de Sites", description: "Skills e referências organizadas para o seu próximo site.", images: ["/opengraph-image"] },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
-        <base href={baseURL} />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: `try{document.documentElement.dataset.theme=localStorage.getItem('os-theme')||((matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light')}catch(e){}` }} />
       </head>
-      <body>{children}</body>
+      <body>{children}<CookieConsent /></body>
     </html>
   );
 }

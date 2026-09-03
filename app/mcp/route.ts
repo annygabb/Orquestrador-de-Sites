@@ -3,6 +3,8 @@ import { prepareMcpPage } from "@/lib/mcp-page";
 import { catalog, itemById } from "@/lib/catalog";
 import { buildSelectionPrompt, externalResourceNotice } from "@/lib/selection-prompt";
 import { ProposalError, skillProposalSchema, submitSkillProposal, validateTurnstile } from "@/lib/skill-proposals";
+import { entitlementResponse, requestEntitlement } from "@/lib/entitlements";
+import { AsyncLocalStorage } from "node:async_hooks";
 import {
   registerAppResource,
   registerAppTool,
@@ -12,9 +14,19 @@ import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
 const RESOURCE_URI = "ui://orquestrador-de-sites/seletor.html?v=6";
+const requestContext = new AsyncLocalStorage<{ authorization: string; origin: string }>();
+
+async function requireMcpAccess() {
+  const authorization = requestContext.getStore()?.authorization || "";
+  const entitlement = await requestEntitlement(new Request("https://internal.local/mcp", { headers: { authorization } }));
+  if (!entitlement.allowed) throw new ProposalError("Sua assinatura não está ativa. Abra o perfil para regularizar o acesso.", 402, "SUBSCRIPTION_REQUIRED");
+  return authorization;
+}
 
 async function fetchPageHtml() {
-  const response = await fetch(baseURL);
+  const authorization = await requireMcpAccess();
+  const origin = requestContext.getStore()?.origin ?? baseURL;
+  const response = await fetch(new URL("/painel", origin), { headers: { authorization }, cache: "no-store" });
   if (!response.ok) throw new Error(`Não foi possível carregar a interface: ${response.status}`);
   return prepareMcpPage(await response.text());
 }
@@ -25,8 +37,10 @@ const handler = createMcpHandler(async (server) => {
     "seletor-de-skills",
     RESOURCE_URI,
     { mimeType: RESOURCE_MIME_TYPE },
-    async () => ({
-      contents: [
+    async () => {
+      await requireMcpAccess();
+      const origin = requestContext.getStore()?.origin ?? baseURL;
+      return { contents: [
         {
           uri: RESOURCE_URI,
           mimeType: RESOURCE_MIME_TYPE,
@@ -34,15 +48,15 @@ const handler = createMcpHandler(async (server) => {
           _meta: {
             ui: {
               csp: {
-                connectDomains: [baseURL, "https://challenges.cloudflare.com"],
-                resourceDomains: [baseURL, "https://challenges.cloudflare.com"],
+                connectDomains: [origin, "https://challenges.cloudflare.com"],
+                resourceDomains: [origin, "https://challenges.cloudflare.com"],
                 frameDomains: ["https://challenges.cloudflare.com"],
               },
             },
           },
         },
-      ],
-    }),
+      ] };
+    },
   );
 
   registerAppTool(
@@ -55,15 +69,15 @@ const handler = createMcpHandler(async (server) => {
       annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
       _meta: { ui: { resourceUri: RESOURCE_URI } },
     },
-    async () => ({
-      content: [{ type: "text" as const, text: `Use a interface para selecionar quantas opções quiser e confirme somente quando terminar. ${externalResourceNotice}` }],
-      structuredContent: {
+    async () => {
+      await requireMcpAccess();
+      return { content: [{ type: "text" as const, text: `Use a interface para selecionar quantas opções quiser e confirme somente quando terminar. ${externalResourceNotice}` }], structuredContent: {
         catalog,
         total: catalog.length,
         instructions: "A seleção ainda não foi confirmada.",
         personalizationNotice: externalResourceNotice,
-      },
-    }),
+      } };
+    },
   );
 
   registerAppTool(
@@ -78,6 +92,7 @@ const handler = createMcpHandler(async (server) => {
     },
     async (proposal) => {
       try {
+        await requireMcpAccess();
         const parsed = skillProposalSchema.parse(proposal);
         await validateTurnstile(parsed.turnstileToken);
         const result = await submitSkillProposal(parsed);
@@ -118,6 +133,7 @@ const handler = createMcpHandler(async (server) => {
       _meta: { ui: { visibility: ["app"] } },
     },
     async ({ selectedIds, destinationLink, customSkills = [] }) => {
+      await requireMcpAccess();
       const uniqueIds = [...new Set(selectedIds)];
       const catalogItems = uniqueIds.map((id) => itemById.get(id)).filter((item) => item !== undefined);
       if (catalogItems.length !== uniqueIds.length) {
@@ -157,5 +173,12 @@ const handler = createMcpHandler(async (server) => {
   );
 });
 
-export const GET = handler;
-export const POST = handler;
+async function protectedHandler(request: Request) {
+  const authorization = request.headers.get("authorization") || "";
+  const entitlement = await requestEntitlement(request);
+  if (!entitlement.allowed) return entitlementResponse(entitlement);
+  return requestContext.run({ authorization, origin: new URL(request.url).origin }, () => handler(request));
+}
+
+export const GET = protectedHandler;
+export const POST = protectedHandler;

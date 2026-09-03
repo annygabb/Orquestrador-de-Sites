@@ -1,5 +1,86 @@
 [
   {
+    "date": "2026-09-03",
+    "macrostructure": "Split-path Product Journey",
+    "theme": "custom",
+    "theme_axes": "dark-stage / expressive-serif / cobalt-ice",
+    "enrichment": "floating-path preloader, split auth and pointer-reactive 3D process map",
+    "brief": "Hero horizontal, processo tridimensional e acesso baseado na referência enviada",
+    "scope": "marketing-auth-preloader-process"
+  },
+  {
+    "date": "2026-09-03",
+    "macrostructure": "Horizontal Shader Thesis",
+    "theme": "custom",
+    "theme_axes": "dark-stage / editorial-technical / cobalt-navy",
+    "enrichment": "staged globe preloader, full-bleed reactive shader and orbital process map",
+    "brief": "Hero mais claro e experiência de carregamento com transformação visível",
+    "scope": "marketing-hero-process-preloader"
+  },
+  {
+    "date": "2026-09-03",
+    "macrostructure": "Shader-led Product Transformation Story",
+    "theme": "custom",
+    "theme_axes": "light-dark / editorial-technical / cobalt-navy",
+    "enrichment": "cursor-reactive mesh shader, moving-border actions, 3D globe preloader, draggable phone scrollytelling and focused Google auth",
+    "brief": "Página de vendas azul com direção visual reativa e autenticação sem sobreposição",
+    "scope": "marketing-auth-preloader"
+  },
+  {
+    "date": "2026-09-02",
+    "macrostructure": "Product Transformation Story",
+    "theme": "custom",
+    "theme_axes": "light-dark / editorial-direct / cobalt-navy-accent",
+    "enrichment": "transparent draggable 3D phone, continuous marquee, focused scrollytelling and repaired auth hierarchy",
+    "brief": "Refino visual azul com interação direta e login sem sobreposição",
+    "scope": "marketing-auth-email"
+  },
+  {
+    "date": "2026-09-02",
+    "macrostructure": "Product Transformation Story",
+    "theme": "custom",
+    "theme_axes": "light-dark / editorial-direct / acid-lime-accent",
+    "enrichment": "3D phone scrollytelling, expressive type, line draw, measurable impact dashboard and focused auth",
+    "brief": "Página de vendas direta mostrando como cada skill transforma o projeto",
+    "scope": "marketing-auth-email"
+  },
+  {
+    "date": "2026-09-02",
+    "macrostructure": "Component scope: Immersive Hero",
+    "theme": "custom",
+    "theme_axes": "dark / retro-serif / violet-lime-accent",
+    "enrichment": "interactive WebGL orchestration core with static fallback",
+    "brief": "Hero comercial atmosférico para organizar referências de sites com IA",
+    "scope": "marketing-hero"
+  },
+  {
+    "date": "2026-09-01",
+    "macrostructure": "Guided Orbit",
+    "theme": "custom",
+    "theme_axes": "light-dark / kinetic-technical / cobalt-accent",
+    "enrichment": "interactive CSS 3D process model and user-driven time estimator",
+    "brief": "Página de vendas moderna, direta e interativa com login refinado",
+    "scope": "marketing-auth"
+  },
+  {
+    "date": "2026-09-01",
+    "macrostructure": "Console-led Product Tour",
+    "theme": "custom",
+    "theme_axes": "light-dark / technical-console / cobalt-accent",
+    "enrichment": "interactive skill selector",
+    "brief": "Front completo, responsivo e visualmente verificável com segurança integrada",
+    "scope": "marketing-app-account-legal"
+  },
+  {
+    "date": "2026-08-29",
+    "macrostructure": "Split Studio",
+    "theme": "custom",
+    "theme_axes": "light-dark / geometric-sans / cobalt-accent",
+    "enrichment": "product-interface proof",
+    "brief": "Home SaaS direta para criadores de sites com IA, login e assinatura",
+    "scope": "marketing-auth-billing"
+  },
+  {
     "date": "2026-08-27",
     "macrostructure": "Workbench",
     "theme": "custom",

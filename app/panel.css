@@ -1130,6 +1130,10 @@ html[data-embedded="true"] .skill-builder { padding: var(--space-sm); gap: var(-
   html[data-embedded="true"] .search-field { flex: 1; }
   html[data-embedded="true"] .panel-v2 .tabs { display: inline-flex; }
   html[data-embedded="true"] .catalog-actions { flex-direction: row; align-items: center; }
+  html[data-embedded="true"] .skill-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 62rem) {
+  html[data-embedded="true"] .skill-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 40rem) {
   html[data-embedded="true"] .panel-v2 { padding: var(--space-xs); }

@@ -1,5 +1,5 @@
 // Optional browser regression: run with Playwright installed and a dev server
-// at 127.0.0.1:3100 using NEXT_PUBLIC_TURNSTILE_SITE_KEY=local-test-site-key.
+// at 127.0.0.1:3100 using TURNSTILE_SITE_KEY=local-test-site-key.
 // Only the local fixture is exercised; Cloudflare and proposal writes are mocked.
 import { createRequire } from 'node:module';
 import assert from 'node:assert/strict';

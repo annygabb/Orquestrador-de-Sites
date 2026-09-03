@@ -1,0 +1,54 @@
+name: Backup criptografado
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 4 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar configuração
+        id: config
+        env:
+          BACKUP_DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+          BACKUP_AGE_RECIPIENT: ${{ secrets.BACKUP_AGE_RECIPIENT }}
+          BACKUP_BUCKET: ${{ secrets.BACKUP_BUCKET }}
+        run: |
+          if [ -n "$BACKUP_DATABASE_URL" ] && [ -n "$BACKUP_AGE_RECIPIENT" ] && [ -n "$BACKUP_BUCKET" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "Backup não executado: configure os secrets documentados."
+          fi
+      - name: Instalar age
+        if: steps.config.outputs.enabled == 'true'
+        run: sudo apt-get update && sudo apt-get install -y age postgresql-client
+      - name: Exportar e criptografar
+        if: steps.config.outputs.enabled == 'true'
+        env:
+          BACKUP_DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+          BACKUP_AGE_RECIPIENT: ${{ secrets.BACKUP_AGE_RECIPIENT }}
+        run: |
+          umask 077
+          pg_dump --format=custom --no-owner --no-acl "$BACKUP_DATABASE_URL" | age -r "$BACKUP_AGE_RECIPIENT" -o backup.dump.age
+          sha256sum backup.dump.age > backup.dump.age.sha256
+      - name: Enviar ao armazenamento separado
+        if: steps.config.outputs.enabled == 'true'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.BACKUP_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.BACKUP_AWS_REGION }}
+          BACKUP_BUCKET: ${{ secrets.BACKUP_BUCKET }}
+          BACKUP_ENDPOINT: ${{ secrets.BACKUP_ENDPOINT }}
+        run: |
+          stamp=$(date -u +%Y/%m/%d/%H%M%S)
+          aws s3 cp backup.dump.age "s3://$BACKUP_BUCKET/orquestrador/$stamp.dump.age" --endpoint-url "$BACKUP_ENDPOINT"
+          aws s3 cp backup.dump.age.sha256 "s3://$BACKUP_BUCKET/orquestrador/$stamp.dump.age.sha256" --endpoint-url "$BACKUP_ENDPOINT"
+      - name: Remover arquivo temporário
+        if: always() && steps.config.outputs.enabled == 'true'
+        run: rm -f backup.dump.age backup.dump.age.sha256

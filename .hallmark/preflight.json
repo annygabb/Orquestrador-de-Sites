@@ -1,0 +1,13 @@
+{
+  "scope": "marketing, auth and lifecycle email",
+  "framework": "Next.js 16 / React 19",
+  "macrostructure": "split-path product journey with horizontal shader and interactive orbital map",
+  "typography": {
+    "display": "Fraunces Variable",
+    "body": "DM Sans Variable",
+    "note": "Salty Ages requires a separately licensed webfont file"
+  },
+  "palette": ["off-white", "cobalt blue", "navy", "coral"],
+  "motion": ["GSAP", "Lenis", "Framer Motion", "Paper Design mesh shader", "React Three Fiber globe", "interactive CSS perspective"],
+  "constraints": ["reduced motion", "keyboard focus", "320px minimum", "honest simulated metrics", "four-stage 4.4s preloader", "continuous marquee", "Open Graph preview"]
+}

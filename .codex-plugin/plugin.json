@@ -1,7 +1,7 @@
 {
   "name": "orquestrador-de-sites",
   "version": "1.0.0",
-  "description": "Seleciona e confirma skills e personalizações para criação e revisão de sites.",
+  "description": "Seleciona e confirma skills e referências para projetos de sites, com acesso protegido por assinatura.",
   "author": {
     "name": "annygabb",
     "url": "https://github.com/annygabb"
@@ -12,16 +12,16 @@
   "interface": {
     "displayName": "Orquestrador de Sites",
     "shortDescription": "Escolha skills e referências do projeto",
-    "longDescription": "Interface com checkboxes, contador e confirmação para ativar skills e personalizações na criação e revisão de sites.",
+    "longDescription": "Interface responsiva para escolher, conferir e aplicar skills e referências em projetos de sites. O acesso exige uma conta e um período pago ativo.",
     "developerName": "annygabb",
     "category": "Developer Tools",
-    "capabilities": ["Interactive", "Read"],
-    "websiteURL": "https://github.com/annygabb/Orquestrador-de-Sites",
+    "capabilities": ["Interactive", "Read", "Write"],
+    "websiteURL": "https://orquestradordesites.vercel.app",
     "defaultPrompt": [
       "Mostre minhas skills de projeto.",
       "Quero personalizar este site.",
       "Abra o orquestrador de sites."
     ],
-    "brandColor": "#D94B2B"
+    "brandColor": "#1769E0"
   }
 }
