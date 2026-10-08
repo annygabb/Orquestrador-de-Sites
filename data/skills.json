@@ -154,8 +154,8 @@
     "name": "Revenue-Centric Design",
     "kind": "skill",
     "group": "Design",
-    "description": "Orienta decisões de produto e interface para gerar valor ao usuário e apoiar conversão, retenção e receita com evidências.",
-    "directive": "Aplique Revenue-Centric Design em landing pages, SaaS, onboarding, pricing, checkout, retenção, posicionamento e CRO: cada recomendação deve servir ao usuário e ao negócio, declarar o mecanismo e separar evidência de promessa. Não invente escassez, depoimentos, métricas ou resultados. Não use esta skill em apostas, cassino, gambling ou jogos de azar com dinheiro real; respeite a licença e a atribuição da fonte.",
+    "description": "Analisa páginas existentes com foco em conversão, clareza da proposta, CTAs, provas, objeções e atritos.",
+    "directive": "Use Revenue-Centric Design somente para analisar uma página existente quando o usuário pedir uma análise de conversão, CRO ou diagnóstico comercial. Avalie proposta de valor, hierarquia, CTA, provas, objeções, confiança e atritos; cada recomendação deve servir ao usuário e ao negócio, declarar o mecanismo e separar evidência de promessa. Não use esta skill para criar ou estilizar automaticamente páginas. Não invente escassez, depoimentos, métricas ou resultados. Não use esta skill em apostas, cassino, gambling ou jogos de azar com dinheiro real; respeite a licença e a atribuição da fonte.",
     "source": "https://github.com/fabricioctelles/skills/tree/main/skills/revenue-centric-design",
     "badge": "Receita"
   },
@@ -254,6 +254,36 @@
     "group": "Conteúdo",
     "description": "Cria imagens e texturas quando assets próprios melhoram o projeto.",
     "directive": "Gere imagens somente quando elas agregarem valor real à interface; defina enquadramento, estilo, proporção e uso final, e otimize os arquivos para web."
+  },
+  {
+    "id": "refero-styles",
+    "name": "Refero Styles",
+    "kind": "personalization",
+    "group": "Referências",
+    "description": "Biblioteca de design systems observados em produtos reais, com cores, tipografias, componentes e padrões visuais. Recurso externo, não é uma skill.",
+    "directive": "Consulte Refero Styles para comparar design systems reais e orientar combinações de cores, tipografia e componentes. Use como análise e inspiração; não copie identidade, conteúdo ou sistema visual de terceiros.",
+    "source": "https://styles.refero.design/",
+    "badge": "Recurso externo"
+  },
+  {
+    "id": "inspora-design",
+    "name": "Inspora",
+    "kind": "personalization",
+    "group": "Referências",
+    "description": "Referências de web design, branding, interfaces, motion e 3D para explorar direções estéticas menos genéricas. Recurso externo, não é uma skill.",
+    "directive": "Consulte Inspora somente como repertório visual antes de definir a direção estética. Extraia princípios de composição, tipografia, cor e movimento, mas crie uma solução original e adequada ao conteúdo do projeto.",
+    "source": "https://www.inspora.design/",
+    "badge": "Recurso externo"
+  },
+  {
+    "id": "spell-components",
+    "name": "Spell",
+    "kind": "personalization",
+    "group": "Componentes",
+    "description": "Coleção de componentes, animações e elementos visuais sofisticados para elevar interfaces. Recurso externo, não é uma skill.",
+    "directive": "Consulte Spell apenas como referência externa para componentes, animações e interações quando isso combinar com o projeto. Não instale nem copie automaticamente. Verifique licença, acessibilidade, responsividade, dependências e desempenho antes de adaptar qualquer elemento.",
+    "source": "https://spell.sh/",
+    "badge": "Recurso externo"
   },
   {
     "id": "gradient-reference",
