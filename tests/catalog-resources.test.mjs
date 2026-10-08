@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { buildSelectionPrompt } from '../lib/selection-prompt.ts';
 
 const catalog = JSON.parse(readFileSync(new URL('../data/skills.json', import.meta.url), 'utf8'));
+const orchestrator = readFileSync(new URL('../skills/site-orchestrator/SKILL.md', import.meta.url), 'utf8');
 const expected = {
   "gradient-reference": "https://grainient.supply/",
   "design-inspiration": "https://typ.io/",
@@ -11,7 +12,10 @@ const expected = {
   "nappy-photos": "https://nappy.co/",
   "foodiesfeed-photos": "https://www.foodiesfeed.com/pt",
   "lifeofpix-photos": "https://www.lifeofpix.com/",
-  "stocksy-photos": "https://www.stocksy.com/"
+  "stocksy-photos": "https://www.stocksy.com/",
+  "spell-components": "https://spell.sh/",
+  "inspora-design": "https://www.inspora.design/",
+  "refero-styles": "https://styles.refero.design/"
 };
 
 test('requested resources have stable IDs, exact links and external classification', () => {
@@ -51,6 +55,10 @@ test('orchestration skills are cataloged with safe routing and installation rule
   assert.match(findSkills?.directive ?? '', /nunca instale automaticamente/i);
 
   assert.equal(revenue?.source, 'https://github.com/fabricioctelles/skills/tree/main/skills/revenue-centric-design');
+  assert.match(revenue?.description ?? '', /analisar páginas existentes/i);
+  assert.match(revenue?.directive ?? '', /somente para analisar uma página existente/i);
+  assert.doesNotMatch(orchestrator, /em tarefas de landing page.*aplique também `revenue-centric-design`/i);
+  assert.match(orchestrator, /somente quando o usuário pedir uma análise de conversão/i);
   assert.match(revenue?.directive ?? '', /não use esta skill em apostas/i);
 
   assert.ok(!catalog.some(item => item.id === 'superpowers'));
