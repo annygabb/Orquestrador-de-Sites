@@ -154,7 +154,7 @@
     "name": "Revenue-Centric Design",
     "kind": "skill",
     "group": "Design",
-    "description": "Analisa páginas existentes com foco em conversão, clareza da proposta, CTAs, provas, objeções e atritos.",
+    "description": "Usada para analisar páginas existentes com foco em conversão, clareza da proposta, CTAs, provas, objeções e atritos.",
     "directive": "Use Revenue-Centric Design somente para analisar uma página existente quando o usuário pedir uma análise de conversão, CRO ou diagnóstico comercial. Avalie proposta de valor, hierarquia, CTA, provas, objeções, confiança e atritos; cada recomendação deve servir ao usuário e ao negócio, declarar o mecanismo e separar evidência de promessa. Não use esta skill para criar ou estilizar automaticamente páginas. Não invente escassez, depoimentos, métricas ou resultados. Não use esta skill em apostas, cassino, gambling ou jogos de azar com dinheiro real; respeite a licença e a atribuição da fonte.",
     "source": "https://github.com/fabricioctelles/skills/tree/main/skills/revenue-centric-design",
     "badge": "Receita"
