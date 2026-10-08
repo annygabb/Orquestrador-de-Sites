@@ -37,3 +37,23 @@ test('old gradient and generic inspiration links are replaced without removing c
   assert.equal(catalog.find(item => item.id === 'vercel-react-best-practices')?.kind, 'skill');
   assert.equal(new Set(catalog.map(item => item.id)).size, catalog.length);
 });
+
+test('orchestration skills are cataloged with safe routing and installation rules', () => {
+  const usingSuperpowers = catalog.find(item => item.id === 'using-superpowers');
+  const findSkills = catalog.find(item => item.id === 'find-skills');
+  const revenue = catalog.find(item => item.id === 'revenue-centric-design');
+
+  assert.equal(usingSuperpowers?.source, 'https://github.com/obra/superpowers/tree/main/skills/using-superpowers');
+  assert.match(usingSuperpowers?.directive ?? '', /antes de responder ou agir/i);
+
+  assert.equal(findSkills?.source, 'https://github.com/vercel-labs/skills/tree/main/skills/find-skills');
+  assert.match(findSkills?.directive ?? '', /confirmação explícita/i);
+  assert.match(findSkills?.directive ?? '', /nunca instale automaticamente/i);
+
+  assert.equal(revenue?.source, 'https://github.com/fabricioctelles/skills/tree/main/skills/revenue-centric-design');
+  assert.match(revenue?.directive ?? '', /não use esta skill em apostas/i);
+
+  assert.ok(!catalog.some(item => item.id === 'superpowers'));
+  assert.equal(new Set(catalog.map(item => item.id)).size, catalog.length);
+});
+

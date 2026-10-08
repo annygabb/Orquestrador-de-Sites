@@ -15,6 +15,8 @@ MCP App com uma interface completa de seleção: checkboxes, busca, filtros, con
 - catálogo de design, UX, revisão de código, segurança, SEO, animação, otimização de tokens, componentes e referências;
 - implantação pronta para Vercel;
 - skill de orquestração para empacotamento como plugin Codex.
+- roteamento por tarefa com `using-superpowers`, descoberta segura com `find-skills` e critérios comerciais com `Revenue-Centric Design`;
+- confirmação explícita antes da instalação de qualquer skill externa.
 
 ## Publicar na Vercel
 
